@@ -35,3 +35,6 @@
 
 # Breakdown-specific files, e.g. Github wiki frontpage, that should not be modified by changes to C:DDA master, nor pushed to C:DDA master
 README.md merge=ours
+brainstorm.md merge=ours
+.gitattributes merge=ours
+.gitignore merge=ours

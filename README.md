@@ -7,3 +7,4 @@
 
 Cataclysm: Breakdown is a "mod" of C:DDA created by ThinkInvisible for personal use. In C:BD, more than just zombies have invaded the world... entire laws of physics have changed!
 C:BD adds many various changes to C:DDA, ones that don't fit the design plan of the original -- such as magic. This is NOT an excessively public project, and pull requests by other users are not likely to be accepted.
+There's a [LOCAL BRAINSTORMING FILE](../brainstorm.md) for a good list of planned changes.
