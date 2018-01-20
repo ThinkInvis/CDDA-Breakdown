@@ -33,7 +33,7 @@
 *.png     binary
 *.ttf     binary
 
-# Breakdown-specific files, e.g. Github wiki frontpage, that should not be modified by changes to C:DDA master, nor pushed to C:DDA master
+# Breakdown-specific files, e.g. Github wiki frontpage, that should not be modified by changes to C:DDA master, nor pushed to C:DDA master (not that anything should be the latter anyways)
 README.md merge=ours
 brainstorm.md merge=ours
 .gitattributes merge=ours
