@@ -1491,6 +1491,13 @@ void options_manager::init()
         false, COPT_ALWAYS_HIDE
         );
 
+    mOptionsSort["world_default"]++;
+
+    add( "BIONICS_PAINFUL", "world_default", translate_marker( "Disables painkiller requirement for installing bionics." ),
+        translate_marker( "If true, you will not need to use painkillers to self-install bionics." ),
+        false, COPT_ALWAYS_HIDE
+        );
+
     for (unsigned i = 0; i < vPages.size(); ++i) {
         mPageItems[i].resize(mOptionsSort[vPages[i].first]);
     }

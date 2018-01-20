@@ -1,0 +1,16 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "no_painful_bionics",
+    "name": "Painless Bionics",
+    "authors": [ "ThinkInvisible" ],
+    "maintainers": [ "ThinkInvisible" ],
+    "description": "Removes the painkiller requirement for installing bionics.",
+    "category": "rebalance",
+    "dependencies": [ "dda" ]
+  },
+  {
+    "type": "WORLD_OPTION",
+    "options": [ "BIONICS_PAINFUL" ]
+  }
+]

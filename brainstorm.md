@@ -151,3 +151,10 @@ Idea from Coolthulhu's Patches
 Idea from Coolthulhu's Patches (normal distrib.?)
 #### Allow distant viewing of items on tables, beds, etc.
 Depend on a Perception substat?
+## Behind-the-scenes
+Support features or stages required for other planned features
+### Elemental resistances/effects
+### 3D rendering library
+Just plain OpenGL?
+## Various Notes
+- Allow crafting in dark with higher stats/fail chance?
