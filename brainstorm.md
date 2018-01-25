@@ -130,6 +130,8 @@ Gear can now be modified to fit mutations by expending materials and a crafting 
 Flag some items as "Jury-Rigged"; the RES substat affects these items' stats, usability by player, crafting unlock...
 ### Fog-of-War Memory
 Make areas on the main game screen remain visible under fog-of-war for some time after leaving, depending on MEM substat. This acts as a fixed-tile-count trail behind the player.
+### "Crystalline" mutline
+### Quick Comparison for picking up equipped/worn items (+x/-x next to stats, *x for new stats and ~x for removed stats?)
 ### Audio
 Add sound cues for crafting, movement, ambient sources...
 #### Crafting
@@ -139,22 +141,56 @@ Various footstep sounds
 #### Combat
 #### Ambient
 #### Other Actions
+### More advanced chemical processes
+e.g. ammonia generation/refinement, glassmaking from ash/potash, manual creation of reactors in lategame, mining and refinement of ore (surveying?)
+### Sifting/sieving/panning
+### Jurassic Park-style research of fossils, genetic manipulation
+### Taming (and possibly mutation) of other creatures
+Because pet ultramoose!!!
+### Shore up NPC behavior
+Allow designation of vehicle spots?
+Let NPCs in your "party" be given tasks, e.g. crafting something while resources are present in a certain inventory, or patrolling around a vehicle while stopped... automatically curing hides and unrolling finished product? Hunting?
+### More advanced drones capable of more complex interactions
+As far as Turtles in the ComputerCraft Minecraft mod? May be another solution to the autocrafting problem proposed above for NPCs
 ### AI Interaction
 Expand the range of in-world interaction menus (unload nearby, read nearby...), and move the player to further items automatically.
 ### "Explored territory" marker on map, minimap, ingame...
+### Language system (directly add/add-on to race system)?
+### More NPCs, different races, establish relations with different races... keep cities inhabited?
+### Forts and such for new races
+Dwarf Fortress: zombie edition!
+### "Spice of life" bonus for eating different foods/penalty for eating too much of same food, without being so complex as the nutrition feature
 ### New Items
+#### Baited animal/fish traps (if not present already)
+#### Shields
+#### Sling (if not present already)
 ### Feature changes/removals
-Overrides undesired changes made in previous C:DDA patches.
+Overrides undesired changes made in previous C:DDA patches, or adds changes that are pretty much completely just cheats.
+#### "Unpackage All" command for powders, chips, etc. in inventory
+#### Autoloot, including for the above unpackage option
+Autoread+grab unread books?
+#### Add lab access to some professions?
+Revamp ID cards? Maybe infinite uses as long as computers/some disguise-related skill holds up -- system may require retinal scan, or just have AI that may or may not recognize the wrong person holding an ID card
+#### Two-way Metabolic Interchange CBM
+Allow Metabolic Interchange to refill hunger from excess power.
 #### Remove CBM Painkiller Requirement (option)
 Idea from Coolthulhu's Patches
 #### Make ranged accuracy fall off slower
 Idea from Coolthulhu's Patches (normal distrib.?)
 #### Allow distant viewing of items on tables, beds, etc.
 Depend on a Perception substat?
+#### Single-target admin kill command (because I like cheating)
+#### NPC aggression/difficulty option in worldgen
+#### Vehicle health/durability option in worldgen; no-vehicle-damage mod?
 ## Behind-the-scenes
 Support features or stages required for other planned features
 ### Elemental resistances/effects
 ### 3D rendering library
 Just plain OpenGL?
 ## Various Notes
-- Allow crafting in dark with higher stats/fail chance?
+- Allow crafting in dark with higher stats req/fail chance? Or with mutations?
+- Allow refilling vehicle tanks from stored items (e.g. in cargo space)? May just be that the refill option doesn't detect Gasoline Lantern
+### on New Mutations for races, etc. and spell effects
+Arcanavore: Able to eat magical items for sustenance.
+Infernal Metabolism: Able to eat just about anything for sustenance (similar to Internal Furnace CBM).
+Crystalline Flesh: Increased durability against cutting and piercing damage, immunity to just about every exotic effect, but *greatly increased* damage taken from bashing sources.
