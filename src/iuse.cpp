@@ -1798,13 +1798,13 @@ int iuse::sew_advanced(player *p, item *it, bool, const tripoint& )
 
     // TODO: Wrap all the mods into structs, maybe even json-able
     // All possible mods here
-    std::array<std::string, 4> clothing_mods{
-        { "wooled", "furred", "leather_padded", "kevlar_padded" }
+    std::array<std::string, 5> clothing_mods{
+        { "wooled", "furred", "leather_padded", "kevlar_padded", "mut_fit" }
     };
 
     // Materials those mods use
-    std::array<std::string, 4> mod_materials{
-        { "felt_patch", "fur", "leather", "kevlar_plate" }
+    std::array<std::string, 5> mod_materials{
+        { "felt_patch", "fur", "leather", "kevlar_plate", "rag" } //BDTODO: figure out the above TODO, allow for non-material mods like mut_fit
     };
 
     // Cache available materials
@@ -1817,7 +1817,8 @@ int iuse::sew_advanced(player *p, item *it, bool, const tripoint& )
     }
 
     const int mod_count = mod->item_tags.count("wooled") + mod->item_tags.count("furred") +
-                          mod->item_tags.count("leather_padded") + mod->item_tags.count("kevlar_padded");
+                          mod->item_tags.count("leather_padded") + mod->item_tags.count("kevlar_padded") +
+                          mod->item_tags.count("mut_fit");
 
     // We need extra thread to lose it on bad rolls
     const int thread_needed = mod->volume() / 125_ml + 10;
@@ -1866,12 +1867,23 @@ int iuse::sew_advanced(player *p, item *it, bool, const tripoint& )
         mod->bash_resist(), mod->cut_resist(), temp_item.bash_resist(), temp_item.cut_resist(),
         mod->get_encumber(), temp_item.get_encumber() );
 
-    tmenu.addentry( 4, true, 'q', _("Cancel") );
+    //if ( ... ) { //BDTODO: "is mutated"/"has mutation-friendly clothing research" flag
+        
+    //}
+
+    temp_item = modded_copy( mod, "mut_fit" );
+    enab = can_add_mod( "mut_fit", "rag" );
+    tmenu.addentry( 4, enab, MENU_AUTOASSIGN, _("%s (Allow Wearing with Mutations, Encumbrance: %d->%d)"), //BDTODO: just using the Fits tag for now
+        mod->item_tags.count("mut_fit") == 0 ? _("Fit to Mutations [NYI]") : _("Restore to Standard [NYI]"),
+        mod->get_encumber(), temp_item.get_encumber() );
+
+    // tmenu.addentry( 4, true, 'q', _("Cancel") );
+    tmenu.addentry( 5, true, 'q', _("Cancel") );
 
     tmenu.query();
     const int choice = tmenu.ret;
 
-    if( choice < 0 || choice > 3 ) {
+    if( choice < 0 || choice > 4 ) { //BDTODO: will need to change this code too for above, maybe a few others
         return 0;
     }
 

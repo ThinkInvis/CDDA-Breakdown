@@ -106,6 +106,10 @@ static const trait_id trait_WEBBED( "WEBBED" );
 static const trait_id trait_WINGS_BAT( "WINGS_BAT" );
 static const trait_id trait_WINGS_BUTTERFLY( "WINGS_BUTTERFLY" );
 static const trait_id debug_nodmg( "DEBUG_NODMG" );
+//BD traits
+static const trait_id trait_BD_DIGITIGRADE("BD_DIGITIGRADE");
+static const trait_id trait_BD_DIGITIJUMP("BD_DIGITIJUMP");
+static const trait_id trait_BD_QUADRIPEDAL("BD_QUADRIPEDAL");
 
 Character::Character() : Creature(), visitable<Character>()
 {
@@ -414,9 +418,16 @@ bool Character::move_effects(bool attacking)
         /** @EFFECT_STR increases chance to escape pit */
 
         /** @EFFECT_DEX increases chance to escape pit, slightly */
+        /** BD: BD_DIGITIJUMP mutation guarantees pit escape (thru jumping)*/
         if (rng(0, 40) > get_str() + get_dex() / 2) {
-            add_msg_if_player(m_bad, _("You try to escape the pit, but slip back in."));
-            return false;
+            if(has_trait(trait_BD_DIGITIJUMP)) {
+                add_msg_player_or_npc(m_good, _("You use your superior, evolved legs to leap out of the pit!"),
+                                    _("<npcname> leaps out of the pit!"));
+                remove_effect( effect_in_pit);
+            } else {
+                add_msg_if_player(m_bad, _("You try to escape the pit, but slip back in."));
+                return false;
+            }
         } else {
             add_msg_player_or_npc(m_good, _("You escape the pit!"),
                                     _("<npcname> escapes the pit!"));
@@ -1329,29 +1340,42 @@ void Character::reset_stats()
     }
 
     // Dodge-related effects
+    bool hasTail = false;
     if (has_trait( trait_TAIL_LONG )) {
         mod_dodge_bonus(2);
+        hasTail = true;
     }
     if (has_trait( trait_TAIL_CATTLE )) {
         mod_dodge_bonus(1);
+        hasTail = true;
     }
     if (has_trait( trait_TAIL_RAT )) {
         mod_dodge_bonus(2);
+        hasTail = true;
     }
     if (has_trait( trait_TAIL_THICK ) && !(has_active_mutation( trait_TAIL_THICK )) ) {
         mod_dodge_bonus(1);
+        hasTail = true;
     }
     if (has_trait( trait_TAIL_RAPTOR )) {
         mod_dodge_bonus(3);
+        hasTail = true;
     }
     if (has_trait( trait_TAIL_FLUFFY )) {
         mod_dodge_bonus(4);
+        hasTail = true;
     }
     if (has_trait( trait_WINGS_BAT )) {
         mod_dodge_bonus(-3);
+        hasTail = true;
     }
     if (has_trait( trait_WINGS_BUTTERFLY )) {
         mod_dodge_bonus(-4);
+        hasTail = true;
+    }
+    if (has_trait(trait_BD_DIGITIGRADE) && !has_trait(trait_BD_QUADRIPEDAL)) {
+        mod_dodge_bonus(-2);
+        if(!hasTail) mod_dodge_bonus(-4);
     }
 
     /** @EFFECT_STR_MAX above 15 decreases Dodge bonus by 1 (NEGATIVE) */

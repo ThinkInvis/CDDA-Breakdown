@@ -1,0 +1,116 @@
+[
+	{
+        "type" : "mutation_category",
+        "id" : "mutation_dragon",
+        "name" : "Dragon",
+        "category" : "DRAGON",
+        "mutagen_message" : ".",
+        "iv_message" : ".",
+        "memorial_message" : "Started their hoard."
+    },{
+		"type" : "mutation_category",
+        "id" : "mutation_crystal",
+        "name" : "Crystalline",
+        "category" : "CRYSTAL",
+        "mutagen_message" : ".",
+        "iv_message" : ".",
+        "memorial_message" : "Solidified their priorities, and also their body."
+    },{
+        "type" : "mutation",
+        "id" : "THRESH_DRAGON",
+        "name" : "Dragon",
+        "points" : 1,
+        "description" : "You can't quite remember what you were before, but you're better now. Your glorious scales and magnificent horns are proof of that... and anyone who tells you otherwise WILL TASTE THE FURY OF THE ELEMENTS.",
+        "valid": false,
+        "purifiable": false,
+        "threshold": true
+    },{
+        "type" : "mutation",
+        "id" : "THRESH_CRYSTAL",
+        "name" : "Crystalline",
+        "points" : 1,
+        "description" : "You've long left behind the primitive concepts of 'organic matter' and 'laws of physics'. Also, you look really pretty when light hits you! So shiny...",
+        "valid": false,
+        "purifiable": false,
+        "threshold": true
+    },{
+        "type" : "mutation",
+        "id" : "BD_DIGITIGRADE",
+        "name" : "Digitigrade",
+        "points" : 5,
+		"visibility": 8,
+		"ugliness": 2,
+        "description" : "You're pretty sure human legs aren't supposed to bend that way... so you guess that means you don't have human legs anymore.",
+        "prereqs": ["ROADRUNNER"],
+		"leads_to": ["BD_DIGITIJUMP", "BD_QUADRIPEDAL"],
+		"category": ["MUTCAT_DRAGON", "MUTCAT_BEAST", "MUTCAT_LUPINE", "MUTCAT_FELINE", "MUTCAT_CATTLE", "MUTCAT_BIRD", "MUTCAT_LIZARD", "MUTCAT_URSINE", "MUTCAT_RAT", "MUTCAT_RAPTOR", "MUTCAT_CHIMERA"],
+		"restricts_gear": ["LEG_L", "LEG_R", "FOOT_L", "FOOT_R"],
+		"allow_soft_gear": false,
+		"attacks": {
+            "attack_text_u" : "You forcefully kick %s",
+            "attack_text_npc" : "%1$s forcefully kicks %2$s",
+            "chance" : 10,
+			"hardcoded_effect": true
+		}
+    },{
+        "type" : "mutation",
+        "id" : "BD_DIGITIJUMP",
+        "name" : "Leaper",
+        "points" : 5,
+		"visibility": 0,
+		"ugliness": 0,
+        "description" : "You're really starting to get the hang of your digitigrade legs. You can use them to leap great distances with alarming speed, and to perform a tackle attack. [NYI]",
+        "prereqs": ["BD_DIGITIGRADE"],
+		"category": ["MUTCAT_DRAGON", "MUTCAT_BEAST", "MUTCAT_LUPINE", "MUTCAT_FELINE",  "MUTCAT_RAT", "MUTCAT_RAPTOR", "MUTCAT_CHIMERA", "MUTCAT_SPIDER"]
+    },{
+        "type" : "mutation",
+        "id" : "BD_QUADRIPEDAL",
+        "name" : "Quadripedal",
+        "points" : 5,
+		"visibility": 6,
+		"ugliness": 2,
+        "description" : "Why let those 'arm' things hang uselessly by your sides while you're running around? You could move a lot faster if you used those too. Your shoulders seem to agree.",
+        "prereqs": ["BD_DIGITIGRADE"],
+		"category": ["MUTCAT_DRAGON", "MUTCAT_BEAST", "MUTCAT_LUPINE", "MUTCAT_FELINE",  "MUTCAT_RAT", "MUTCAT_RAPTOR", "MUTCAT_CHIMERA", "MUTCAT_CATTLE", "MUTCAT_URSINE", "MUTCAT_LIZARD", "MUTCAT_SPIDER"],
+		"threshreq": ["THRESH_DRAGON", "THRESH_BEAST", "THRESH_LUPINE", "THRESH_FELINE",  "THRESH_RAT", "THRESH_RAPTOR", "THRESH_CHIMERA", "THRESH_CATTLE", "THRESH_URSINE", "THRESH_LIZARD", "THRESH_SPIDER"],
+		"restricts_gear": ["ARM_L", "ARM_R", "HAND_L", "HAND_R", "TORSO"]
+	},{
+        "type" : "mutation",
+        "id" : "BD_EIDETIC",
+        "name" : "Eidetic Memory",
+        "points" : 8,
+		"visibility": 0,
+		"ugliness": 0,
+        "description" : "You remember everything. EVERYTHING.",
+        "prereqs": ["GOODMEMORY"],
+		"category": ["MUTCAT_ALPHA", "MUTCAT_ELFA", "MUTCAT_CEPHALOPOD"],
+		"threshreq": ["THRESH_ALPHA", "THRESH_ELFA", "THRESH_CEPHALOPOD"]
+	},{
+        "type" : "mutation",
+        "id" : "BD_CRYSTAL1",
+        "name" : "Crystal Skin",
+        "points" : 2,
+		"visibility": 10,
+		"ugliness": -3,
+        "description" : "Your skin has grown a thin layer of oddly flexible, glimmering, colorful crystal. It stands up to most attacks that aren't blunt force, and seems to mask your scent somewhat.",
+		"category": ["MUTCAT_CRYSTAL"],
+		"//": "BDTODO: add scent effect",
+		"prereqs": ["SKIN_ROUGH"],
+		"changes_to": ["BD_CRYSTAL2"],
+		"bodytemp_modifiers": [-100, 100],
+		"armor": [{"parts": "ALL", "cut": 2}, {"parts": "ALL", "stab": 2}, {"parts": "ALL", "acid": 2}, {"parts": "ALL", "fire": 2}, {"parts": "ALL", "cold": 2}, {"parts": "ALL", "shock": 2}]
+	},{
+        "type" : "mutation",
+        "id" : "BD_CRYSTAL2",
+        "name" : "Crystal Flesh",
+        "points" : 0,
+		"visibility": 12,
+		"ugliness": -6,
+        "description" : "The crystallization of your skin has spread to your entire body. The light around you shines through you, casting beautiful colored beams on nearby surfaces. You're just about immune to everything but blunt attacks now... but shattering sure isn't fun.",
+		"category": ["MUTCAT_CRYSTAL"],
+		"//": "BDTODO: add scent effect",
+		"prereqs": ["BD_CRYSTAL1"],
+		"bodytemp_modifiers": [-2000, 2000],
+		"armor": [{"parts": "ALL", "cut": 200}, {"parts": "ALL", "stab": 200}, {"parts": "ALL", "acid": 200}, {"parts": "ALL", "fire": 200}, {"parts": "ALL", "cold": 200}, {"parts": "ALL", "shock": 200}, {"parts": "ALL", "bash": -500}]
+	}
+]

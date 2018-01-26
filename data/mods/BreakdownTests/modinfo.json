@@ -1,0 +1,11 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "BreakdownTests",
+    "name": "C:BD Tests",
+    "description": "Stuff, stuff, stuff!",
+    "category": "core",
+    "dependencies": [ "dda" ],
+    "obsolete": false
+  }
+]

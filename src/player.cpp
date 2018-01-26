@@ -482,6 +482,10 @@ static const trait_id trait_WINGS_BUTTERFLY( "WINGS_BUTTERFLY" );
 static const trait_id trait_WINGS_INSECT( "WINGS_INSECT" );
 static const trait_id trait_WOOLALLERGY( "WOOLALLERGY" );
 
+static const trait_id trait_BD_EIDETIC( "BD_EIDETIC" );
+static const trait_id trait_BD_DIGITIGRADE( "BD_DIGITIGRADE" );
+static const trait_id trait_BD_QUADRIPEDAL( "BD_QUADRIPEDAL" );
+
 static const itype_id OPTICAL_CLOAK_ITEM_ID( "optical_cloak" );
 
 player_morale_ptr::player_morale_ptr( const player_morale_ptr &rhs ) :
@@ -1946,6 +1950,12 @@ int player::run_cost( int base_cost, bool diag ) const
     if( has_trait( trait_FLEET2 ) && flatground ) {
         movecost *= .7f;
     }
+    if(has_trait(trait_BD_DIGITIGRADE)) {
+        movecost *= .2f;
+    }
+    if(has_trait(trait_BD_QUADRIPEDAL)) {
+        movecost *= .35f;
+    }
     if( has_trait( trait_SLOWRUNNER ) && flatground ) {
         movecost *= 1.15f;
     }
@@ -2115,7 +2125,7 @@ bool player::digging() const
 
 bool player::is_on_ground() const
 {
-    return hp_cur[hp_leg_l] == 0 || hp_cur[hp_leg_r] == 0 || has_effect( effect_downed );
+    return hp_cur[hp_leg_l] == 0 || hp_cur[hp_leg_r] == 0 || has_effect( effect_downed ); //BDTODO: add flying
 }
 
 bool player::is_elec_immune() const
@@ -7706,7 +7716,7 @@ ret_val<bool> player::can_wear( const item& it  ) const
         return ret_val<bool>::make_failure( _( "You can't wear that, it's filthy!" ) );
     }
 
-    if( !it.has_flag( "OVERSIZE" ) ) {
+    if( !it.has_flag( "OVERSIZE" ) && !it.has_flag("FIT") && it.item_tags.count("mut_fit") == 0) { //BDNOTE: added temp code here, remove it later once we add the mut_fit tag properly
         for( const trait_id &mut : get_mutations() ) {
             const auto &branch = mut.obj();
             if( branch.conflicts_with_item( it ) ) {
@@ -9166,6 +9176,9 @@ int player::time_to_read( const item &book, const player &reader, const player *
     }
     if( !has_identified( book.typeId() ) ) {
         retval /= 10; //skimming
+    }
+    if( has_trait(trait_BD_EIDETIC)) {
+        retval /= 100; //just remember the book for later, no problem!
     }
     return retval;
 }
