@@ -41,7 +41,7 @@
 		"visibility": 8,
 		"ugliness": 2,
         "description" : "You're pretty sure human legs aren't supposed to bend that way... so you guess that means you don't have human legs anymore.",
-        "prereqs": ["ROADRUNNER"],
+        "prereqs": ["FLEET2"],
 		"leads_to": ["BD_DIGITIJUMP", "BD_QUADRIPEDAL"],
 		"category": ["MUTCAT_DRAGON", "MUTCAT_BEAST", "MUTCAT_LUPINE", "MUTCAT_FELINE", "MUTCAT_CATTLE", "MUTCAT_BIRD", "MUTCAT_LIZARD", "MUTCAT_URSINE", "MUTCAT_RAT", "MUTCAT_RAPTOR", "MUTCAT_CHIMERA"],
 		"restricts_gear": ["LEG_L", "LEG_R", "FOOT_L", "FOOT_R"],
