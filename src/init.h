@@ -2,12 +2,11 @@
 #ifndef INIT_H
 #define INIT_H
 
+#include <functional>
+#include <list>
+#include <map>
 #include <string>
 #include <vector>
-#include <list>
-#include <memory>
-#include <map>
-#include <functional>
 
 class loading_ui;
 class JsonObject;
@@ -15,7 +14,7 @@ class JsonIn;
 
 /**
  * This class is used to load (and unload) the dynamic
- * (and modable) data from json files.
+ * (and moddable) data from json files.
  * There exists only one instance of this class, which
  * can be accessed with @ref get_instance
  *
@@ -24,7 +23,7 @@ class JsonIn;
  * - Call @ref unload_data (to unload data from a
  * previously loaded world, if any)
  * - Call @ref load_data_from_path(...) repeatedly with
- * different pathes for the core data and all the mods
+ * different paths for the core data and all the mods
  * of the current world.
  * - Call @ref finalize_loaded_data when all mods have been
  * loaded.
@@ -53,7 +52,7 @@ class DynamicDataLoader
 {
     public:
         typedef std::string type_string;
-        typedef std::map<type_string, std::function<void( JsonObject &, const std::string & )>>
+        typedef std::map<type_string, std::function<void( JsonObject &, const std::string &, const std::string &, const std::string & )>>
                 t_type_function_map;
         typedef std::vector<std::string> str_vec;
 
@@ -68,12 +67,15 @@ class DynamicDataLoader
 
     protected:
         /**
-         * Maps the type string (comming from json) to the
+         * Maps the type string (coming from json) to the
          * functor that loads that kind of object from json.
          */
         t_type_function_map type_function_map;
         void add( const std::string &type, std::function<void( JsonObject & )> f );
         void add( const std::string &type, std::function<void( JsonObject &, const std::string & )> f );
+        void add( const std::string &type,
+                  std::function<void( JsonObject &, const std::string &, const std::string &, const std::string & )>
+                  f );
         /**
          * Load all the types from that json data.
          * @param jsin Might contain single object,
@@ -83,14 +85,17 @@ class DynamicDataLoader
          * @param ui Finalization status display.
          * @throws std::exception on all kind of errors.
          */
-        void load_all_from_json( JsonIn &jsin, const std::string &src, loading_ui &ui );
+        void load_all_from_json( JsonIn &jsin, const std::string &src, loading_ui &ui,
+                                 const std::string &base_path, const std::string &full_path );
         /**
          * Load a single object from a json object.
          * @param jo The json object to load the C++-object from.
          * @param src String identifier for mod this data comes from
          * @throws std::exception on all kind of errors.
          */
-        void load_object( JsonObject &jo, const std::string &src );
+        void load_object( JsonObject &jo, const std::string &src,
+                          const std::string &base_path = std::string(),
+                          const std::string &full_path = std::string() );
 
         DynamicDataLoader();
         ~DynamicDataLoader();

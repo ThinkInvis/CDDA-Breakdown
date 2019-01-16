@@ -1,14 +1,12 @@
 #include "catch/catch.hpp"
-
 #include "crafting.h"
 #include "game.h"
 #include "itype.h"
+#include "map_helpers.h"
 #include "npc.h"
 #include "player.h"
-#include "recipe_dictionary.h"
-
-#include "map_helpers.h"
 #include "player_helpers.h"
+#include "recipe_dictionary.h"
 
 TEST_CASE( "recipe_subset" )
 {
@@ -16,7 +14,7 @@ TEST_CASE( "recipe_subset" )
 
     REQUIRE( subset.size() == 0 );
     GIVEN( "a recipe of rum" ) {
-        const recipe *r = &recipe_dict[ "brew_rum" ];
+        const recipe *r = &recipe_id( "brew_rum" ).obj();
 
         WHEN( "the recipe is included" ) {
             subset.include( r );
@@ -94,10 +92,9 @@ TEST_CASE( "recipe_subset" )
     }
 }
 
-// This crashes subsequent testcases for some reason.
-TEST_CASE( "available_recipes", "[.]" )
+TEST_CASE( "available_recipes", "[recipes]" )
 {
-    const recipe *r = &recipe_dict[ "brew_mead" ];
+    const recipe *r = &recipe_id( "brew_mead" ).obj();
     player dummy;
 
     REQUIRE( dummy.get_skill_level( r->skill_used ) == 0 );
@@ -137,7 +134,7 @@ TEST_CASE( "available_recipes", "[.]" )
         REQUIRE_FALSE( dummy.knows_recipe( r ) );
 
         WHEN( "the player read it and has an appropriate skill" ) {
-            dummy.do_read( &cookbook );
+            dummy.do_read( cookbook );
             dummy.set_skill_level( r->skill_used, 2 );
 
             AND_WHEN( "he searches for the recipe in the book" ) {
@@ -161,10 +158,48 @@ TEST_CASE( "available_recipes", "[.]" )
         }
     }
 
+    GIVEN( "an eink pc with a cannibal recipe" ) {
+        const recipe *r2 = &recipe_id( "soup_human" ).obj();
+        item &eink = dummy.i_add( item( "eink_tablet_pc" ) );
+        eink.set_var( "EIPC_RECIPES", ",soup_human," );
+        REQUIRE_FALSE( dummy.knows_recipe( r2 ) );
+
+        WHEN( "the player holds it and has an appropriate skill" ) {
+            dummy.set_skill_level( r2->skill_used, 2 );
+
+            AND_WHEN( "he searches for the recipe in the tablet" ) {
+                THEN( "he finds it!" ) {
+                    CHECK( dummy.get_recipes_from_books( dummy.inv ).contains( r2 ) );
+                }
+                THEN( "he still hasn't the recipe memorized" ) {
+                    CHECK_FALSE( dummy.knows_recipe( r2 ) );
+                }
+            }
+            AND_WHEN( "he gets rid of the tablet" ) {
+                dummy.i_rem( &eink );
+
+                THEN( "he cant make the recipe anymore" ) {
+                    CHECK_FALSE( dummy.get_recipes_from_books( dummy.inv ).contains( r2 ) );
+                }
+            }
+        }
+    }
+}
+
+// This crashes subsequent testcases for some reason.
+TEST_CASE( "crafting_with_a_companion", "[.]" )
+{
+    const recipe *r = &recipe_id( "brew_mead" ).obj();
+    player dummy;
+
+    REQUIRE( dummy.get_skill_level( r->skill_used ) == 0 );
+    REQUIRE_FALSE( dummy.knows_recipe( r ) );
+    REQUIRE( r->skill_used );
+
     GIVEN( "a companion who can help with crafting" ) {
         standard_npc who( "helper", {}, 0 );
 
-        who.attitude = NPCATT_FOLLOW;
+        who.set_attitude( NPCATT_FOLLOW );
         who.spawn_at_sm( 0, 0, 0 );
 
         g->load_npcs();
@@ -200,23 +235,23 @@ TEST_CASE( "available_recipes", "[.]" )
     }
 }
 
-static void test_craft( const std::string &recipe_id, const std::vector<item> tools,
+static void test_craft( const recipe_id &rid, const std::vector<item> tools,
                         bool expect_craftable )
 {
     clear_player();
     clear_map();
 
-    tripoint test_origin( 60, 60, 0 );
+    const tripoint test_origin( 60, 60, 0 );
     g->u.setpos( test_origin );
-    item backpack( "backpack" );
+    const item backpack( "backpack" );
     g->u.wear( g->u.i_add( backpack ), false );
-    for( item gear : tools ) {
+    for( const item gear : tools ) {
         g->u.i_add( gear );
     }
 
-    const recipe *r = &recipe_dict[ recipe_id ];
+    const recipe &r = rid.obj();
 
-    requirement_data reqs = r->requirements();
+    const requirement_data &reqs = r.requirements();
     inventory crafting_inv = g->u.crafting_inventory();
     bool can_craft = reqs.can_make_with_inventory( g->u.crafting_inventory() );
     CHECK( can_craft == expect_craftable );
@@ -232,16 +267,17 @@ TEST_CASE( "charge_handling" )
         std::vector<item> tools;
         tools.emplace_back( "hotplate", -1, 20 );
         tools.emplace_back( "soldering_iron", -1, 20 );
+        tools.insert( tools.end(), 10, item( "solder_wire" ) );
         tools.emplace_back( "screwdriver" );
         tools.emplace_back( "mold_plastic" );
         tools.insert( tools.end(), 6, item( "plastic_chunk" ) );
         tools.insert( tools.end(), 2, item( "blade" ) );
         tools.insert( tools.end(), 5, item( "cable" ) );
-        tools.emplace_back( "motor_small" );
+        tools.emplace_back( "motor_tiny" );
         tools.emplace_back( "power_supply" );
         tools.emplace_back( "scrap" );
 
-        test_craft( "carver_off", tools, true );
+        test_craft( recipe_id( "carver_off" ), tools, true );
         CHECK( get_remaining_charges( "hotplate" ) == 10 );
         CHECK( get_remaining_charges( "soldering_iron" ) == 10 );
     }
@@ -251,16 +287,17 @@ TEST_CASE( "charge_handling" )
         tools.emplace_back( "hotplate", -1, 5 );
         tools.emplace_back( "soldering_iron", -1, 5 );
         tools.emplace_back( "soldering_iron", -1, 5 );
+        tools.insert( tools.end(), 10, item( "solder_wire" ) );
         tools.emplace_back( "screwdriver" );
         tools.emplace_back( "mold_plastic" );
         tools.insert( tools.end(), 6, item( "plastic_chunk" ) );
         tools.insert( tools.end(), 2, item( "blade" ) );
         tools.insert( tools.end(), 5, item( "cable" ) );
-        tools.emplace_back( "motor_small" );
+        tools.emplace_back( "motor_tiny" );
         tools.emplace_back( "power_supply" );
         tools.emplace_back( "scrap" );
 
-        test_craft( "carver_off", tools, true );
+        test_craft( recipe_id( "carver_off" ), tools, true );
         CHECK( get_remaining_charges( "hotplate" ) == 0 );
         CHECK( get_remaining_charges( "soldering_iron" ) == 0 );
     }
@@ -270,6 +307,7 @@ TEST_CASE( "charge_handling" )
         hotplate.contents.emplace_back( "battery_ups" );
         tools.push_back( hotplate );
         item soldering_iron( "soldering_iron", -1, 0 );
+        tools.insert( tools.end(), 10, item( "solder_wire" ) );
         soldering_iron.contents.emplace_back( "battery_ups" );
         tools.push_back( soldering_iron );
         tools.emplace_back( "screwdriver" );
@@ -277,12 +315,12 @@ TEST_CASE( "charge_handling" )
         tools.insert( tools.end(), 6, item( "plastic_chunk" ) );
         tools.insert( tools.end(), 2, item( "blade" ) );
         tools.insert( tools.end(), 5, item( "cable" ) );
-        tools.emplace_back( "motor_small" );
+        tools.emplace_back( "motor_tiny" );
         tools.emplace_back( "power_supply" );
         tools.emplace_back( "scrap" );
         tools.emplace_back( "UPS_off", -1, 500 );
 
-        test_craft( "carver_off", tools, true );
+        test_craft( recipe_id( "carver_off" ), tools, true );
         CHECK( get_remaining_charges( "hotplate" ) == 0 );
         CHECK( get_remaining_charges( "soldering_iron" ) == 0 );
         CHECK( get_remaining_charges( "UPS_off" ) == 480 );
@@ -293,6 +331,7 @@ TEST_CASE( "charge_handling" )
         hotplate.contents.emplace_back( "battery_ups" );
         tools.push_back( hotplate );
         item soldering_iron( "soldering_iron", -1, 0 );
+        tools.insert( tools.end(), 10, item( "solder_wire" ) );
         soldering_iron.contents.emplace_back( "battery_ups" );
         tools.push_back( soldering_iron );
         tools.emplace_back( "screwdriver" );
@@ -300,12 +339,12 @@ TEST_CASE( "charge_handling" )
         tools.insert( tools.end(), 6, item( "plastic_chunk" ) );
         tools.insert( tools.end(), 2, item( "blade" ) );
         tools.insert( tools.end(), 5, item( "cable" ) );
-        tools.emplace_back( "motor_small" );
+        tools.emplace_back( "motor_tiny" );
         tools.emplace_back( "power_supply" );
         tools.emplace_back( "scrap" );
         tools.emplace_back( "UPS_off", -1, 10 );
 
-        test_craft( "carver_off", tools, false );
+        test_craft( recipe_id( "carver_off" ), tools, false );
     }
 }
 
@@ -319,7 +358,7 @@ TEST_CASE( "tool_use" )
         tools.push_back( plastic_bottle );
         tools.emplace_back( "pot" );
 
-        test_craft( "water_clean", tools, true );
+        test_craft( recipe_id( "water_clean" ), tools, true );
     }
     SECTION( "clean_water_in_occupied_cooking_vessel" ) {
         std::vector<item> tools;
@@ -333,6 +372,6 @@ TEST_CASE( "tool_use" )
         jar.contents.emplace_back( "water", -1, 2 );
         tools.push_back( jar );
 
-        test_craft( "water_clean", tools, false );
+        test_craft( recipe_id( "water_clean" ), tools, false );
     }
 }

@@ -1,16 +1,16 @@
-#include "mutation.h"
+#include "player.h" // IWYU pragma: associated
 
+#include <algorithm> //std::min
+#include <sstream>
+
+#include "mutation.h"
 #include "catacharset.h"
 #include "debug.h"
 #include "game.h"
 #include "input.h"
 #include "output.h"
-#include "player.h"
-#include "translations.h"
 #include "string_formatter.h"
-
-#include <algorithm> //std::min
-#include <sstream>
+#include "translations.h"
 
 // '!' and '=' are uses as default bindings in the menu
 const invlet_wrapper
@@ -58,7 +58,7 @@ void show_mutations_titlebar( const catacurses::window &window, std::string &men
 void player::power_mutations()
 {
     if( !is_player() ) {
-        // TODO: Implement NPCs activating muts
+        // TODO: Implement NPCs activating mutations
         return;
     }
 
@@ -106,7 +106,7 @@ void player::power_mutations()
     int START_Y = ( TERMY - HEIGHT ) / 2;
     catacurses::window wBio = catacurses::newwin( HEIGHT, WIDTH, START_Y, START_X );
 
-    // Description window @ the bottom of the bio window
+    // Description window @ the bottom of the bionic window
     int DESCRIPTION_START_Y = START_Y + HEIGHT - DESCRIPTION_HEIGHT - 1;
     int DESCRIPTION_LINE_Y = DESCRIPTION_START_Y - START_Y - 1;
     catacurses::window w_description = catacurses::newwin( DESCRIPTION_HEIGHT, WIDTH - 2,
@@ -128,6 +128,15 @@ void player::power_mutations()
     ctxt.register_action( "TOGGLE_EXAMINE" );
     ctxt.register_action( "REASSIGN" );
     ctxt.register_action( "HELP_KEYBINDINGS" );
+#ifdef __ANDROID__
+    for( const auto &p : passive ) {
+        ctxt.register_manual_key( my_mutations[p].key, p.obj().name() );
+    }
+    for( const auto &a : active ) {
+        ctxt.register_manual_key( my_mutations[a].key, a.obj().name() );
+    }
+#endif
+
     bool redraw = true;
     std::string menu_mode = "activating";
 
@@ -167,7 +176,7 @@ void player::power_mutations()
                         break;
                     }
                     type = ( has_base_trait( passive[i] ) ? c_cyan : c_light_cyan );
-                    mvwprintz( wBio, list_start_y + i, 2, type, "%c %s", td.key, md.name.c_str() );
+                    mvwprintz( wBio, list_start_y + i, 2, type, "%c %s", td.key, md.name() );
                 }
             }
 
@@ -189,7 +198,7 @@ void player::power_mutations()
                     // TODO: track resource(s) used and specify
                     mvwputch( wBio, list_start_y + i, second_column, type, td.key );
                     std::ostringstream mut_desc;
-                    mut_desc << md.name;
+                    mut_desc << md.name();
                     if( md.cost > 0 && md.cooldown > 0 ) {
                         //~ RU means Resource Units
                         mut_desc << string_format( _( " - %d RU / %d turns" ),
@@ -230,7 +239,7 @@ void player::power_mutations()
             }
             redraw = true;
             const long newch = popup_getkey( _( "%s; enter new letter." ),
-                                             mutation_branch::get_name( mut_id ).c_str() );
+                                             mutation_branch::get_name( mut_id ) );
             wrefresh( wBio );
             if( newch == ch || newch == ' ' || newch == KEY_ESCAPE ) {
                 continue;
@@ -276,38 +285,29 @@ void player::power_mutations()
             if( menu_mode == "activating" ) {
                 if( mut_data.activated ) {
                     if( my_mutations[mut_id].powered ) {
-                        add_msg_if_player( m_neutral, _( "You stop using your %s." ), mut_data.name.c_str() );
+                        add_msg_if_player( m_neutral, _( "You stop using your %s." ), mut_data.name() );
 
                         deactivate_mutation( mut_id );
-                        delwin( w_title );
-                        delwin( w_description );
-                        delwin( wBio );
                         // Action done, leave screen
                         break;
                     } else if( ( !mut_data.hunger || get_hunger() <= 400 ) &&
                                ( !mut_data.thirst || get_thirst() <= 400 ) &&
                                ( !mut_data.fatigue || get_fatigue() <= 400 ) ) {
 
-                        // this will clear the mutations menu for targeting purposes
-                        werase( wBio );
-                        wrefresh( wBio );
-                        delwin( w_title );
-                        delwin( w_description );
-                        delwin( wBio );
                         g->draw();
-                        add_msg_if_player( m_neutral, _( "You activate your %s." ), mut_data.name.c_str() );
+                        add_msg_if_player( m_neutral, _( "You activate your %s." ), mut_data.name() );
                         activate_mutation( mut_id );
                         // Action done, leave screen
                         break;
                     } else {
-                        popup( _( "You don't have enough in you to activate your %s!" ), mut_data.name.c_str() );
+                        popup( _( "You don't have enough in you to activate your %s!" ), mut_data.name() );
                         redraw = true;
                         continue;
                     }
                 } else {
                     popup( _( "\
 You cannot activate %s!  To read a description of \
-%s, press '!', then '%c'." ), mut_data.name.c_str(), mut_data.name.c_str(),
+%s, press '!', then '%c'." ), mut_data.name(), mut_data.name(),
                            my_mutations[mut_id].key );
                     redraw = true;
                 }
@@ -316,17 +316,9 @@ You cannot activate %s!  To read a description of \
                 draw_exam_window( wBio, DESCRIPTION_LINE_Y );
                 // Clear the lines first
                 werase( w_description );
-                fold_and_print( w_description, 0, 0, WIDTH - 2, c_light_blue, mut_data.description );
+                fold_and_print( w_description, 0, 0, WIDTH - 2, c_light_blue, mut_data.desc() );
                 wrefresh( w_description );
             }
         }
-    }
-    //if we activated a mutation, already killed the windows
-    if( !( menu_mode == "activating" ) ) {
-        werase( wBio );
-        wrefresh( wBio );
-        delwin( w_title );
-        delwin( w_description );
-        delwin( wBio );
     }
 }

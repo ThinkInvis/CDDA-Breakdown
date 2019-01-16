@@ -2,12 +2,11 @@
 #ifndef PROFESSION_H
 #define PROFESSION_H
 
-#include "string_id.h"
-
-#include <string>
-#include <vector>
-#include <set>
 #include <list>
+#include <set>
+#include <vector>
+
+#include "string_id.h"
 
 template<typename T>
 class generic_factory;
@@ -38,7 +37,7 @@ class profession
             /** Snippet id, @see snippet_library. */
             std::string snippet_id;
             // compatible with when this was just a std::string
-            itypedec( const char *t ) : type_id( t ), snippet_id() {
+            itypedec( const char *t ) : type_id( t ) {
             }
             itypedec( const std::string &t, const std::string &d ) : type_id( t ), snippet_id( d ) {
             }
@@ -80,7 +79,7 @@ class profession
         //these three aren't meant for external use, but had to be made public regardless
         profession();
 
-        static void load_profession( JsonObject &obj, const std::string &src );
+        static void load_profession( JsonObject &jo, const std::string &src );
         static void load_item_substitutions( JsonObject &jo );
 
         // these should be the only ways used to get at professions
@@ -88,7 +87,7 @@ class profession
         static const std::vector<profession> &get_all();
 
         static bool has_initialized();
-        // clear profession map, every profession pointer becames invalid!
+        // clear profession map, every profession pointer becomes invalid!
         static void reset();
         /** calls @ref check_definition for each profession */
         static void check_definitions();
@@ -109,7 +108,7 @@ class profession
          *
          * Current flags: none
          */
-        bool has_flag( std::string flag ) const;
+        bool has_flag( const std::string &flag ) const;
 
         /**
          * Check if the given player can pick this job with the given amount
@@ -117,7 +116,7 @@ class profession
          *
          * @return true, if player can pick profession. Otherwise - false.
          */
-        bool can_pick( player *u, int points ) const;
+        bool can_pick( const player &u, int points ) const;
         bool is_locked_trait( const trait_id &trait ) const;
         std::vector<trait_id> get_locked_traits() const;
 };

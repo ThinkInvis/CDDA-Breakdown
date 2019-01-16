@@ -1,12 +1,15 @@
 #include "skill.h"
-#include "rng.h"
-#include "options.h"
-#include "debug.h"
-#include "json.h"
-#include "translations.h"
 
 #include <algorithm>
 #include <iterator>
+
+#include "debug.h"
+#include "item.h"
+#include "json.h"
+#include "options.h"
+#include "recipe.h"
+#include "rng.h"
+#include "translations.h"
 
 // TODO: a map, for Barry's sake make this a map.
 std::vector<Skill> Skill::skills;
@@ -14,16 +17,18 @@ std::map<skill_id, Skill> Skill::contextual_skills;
 
 static const Skill invalid_skill;
 
-const Skill &Skill::get( const skill_id &id )
+/** @relates string_id */
+template<>
+const Skill &string_id<Skill>::obj() const
 {
     for( const Skill &skill : Skill::skills ) {
-        if( skill.ident() == id ) {
+        if( skill.ident() == *this ) {
             return skill;
         }
     }
 
-    const auto iter = contextual_skills.find( id );
-    if( iter != contextual_skills.end() ) {
+    const auto iter = Skill::contextual_skills.find( *this );
+    if( iter != Skill::contextual_skills.end() ) {
         return iter->second;
     }
 
@@ -32,16 +37,9 @@ const Skill &Skill::get( const skill_id &id )
 
 /** @relates string_id */
 template<>
-const Skill &string_id<Skill>::obj() const
-{
-    return Skill::get( *this );
-}
-
-/** @relates string_id */
-template<>
 bool string_id<Skill>::is_valid() const
 {
-    return Skill::get( *this ) != invalid_skill;
+    return &obj() != &invalid_skill;
 }
 
 Skill::Skill() : Skill( skill_id::NULL_ID(), "nothing", "The zen-most skill there is.",
@@ -56,17 +54,17 @@ Skill::Skill( skill_id ident, std::string name, std::string description,
 {
 }
 
-std::vector<Skill const *> Skill::get_skills_sorted_by(
-    std::function<bool ( Skill const &, Skill const & )> pred )
+std::vector<const Skill *> Skill::get_skills_sorted_by(
+    std::function<bool ( const Skill &, const Skill & )> pred )
 {
-    std::vector<Skill const *> result;
+    std::vector<const Skill *> result;
     result.reserve( skills.size() );
 
-    std::transform( begin( skills ), end( skills ), back_inserter( result ), []( Skill const & s ) {
+    std::transform( begin( skills ), end( skills ), back_inserter( result ), []( const Skill & s ) {
         return &s;
     } );
 
-    std::sort( begin( result ), end( result ), [&]( Skill const * lhs, Skill const * rhs ) {
+    std::sort( begin( result ), end( result ), [&]( const Skill * lhs, const Skill * rhs ) {
         return pred( *lhs, *rhs );
     } );
 
@@ -82,7 +80,7 @@ void Skill::reset()
 void Skill::load_skill( JsonObject &jsobj )
 {
     skill_id ident = skill_id( jsobj.get_string( "ident" ) );
-    skills.erase( std::remove_if( begin( skills ), end( skills ), [&]( Skill const & s ) {
+    skills.erase( std::remove_if( begin( skills ), end( skills ), [&]( const Skill & s ) {
         return s._ident == ident;
     } ), end( skills ) );
 
@@ -118,12 +116,7 @@ skill_id Skill::from_legacy_int( const int legacy_id )
 
 skill_id Skill::random_skill()
 {
-    return skills[rng( 0, skills.size() - 1 )].ident();
-}
-
-size_t Skill::skill_count()
-{
-    return Skill::skills.size();
+    return random_entry_ref( skills ).ident();
 }
 
 // used for the pacifist trait
@@ -135,30 +128,6 @@ bool Skill::is_combat_skill() const
 bool Skill::is_contextual_skill() const
 {
     return _tags.count( "contextual_skill" ) > 0;
-}
-
-SkillLevel::SkillLevel( int level, int exercise, bool isTraining, const time_point &lastPracticed,
-                        int highestLevel )
-    : _level( level ), _exercise( exercise ), _lastPracticed( lastPracticed ),
-      _isTraining( isTraining ), _highestLevel( highestLevel )
-{
-    if( _lastPracticed == calendar::time_of_cataclysm ) {
-        //@todo shouldn't that be calendar::start?
-        _lastPracticed = calendar::time_of_cataclysm + time_duration::from_hours(
-                             get_option<int>( "INITIAL_TIME" ) );
-    }
-    if( _highestLevel < _level ) {
-        _highestLevel = _level;
-    }
-}
-
-SkillLevel::SkillLevel( int minLevel, int maxLevel, int minExercise, int maxExercise,
-                        bool isTraining,
-                        const time_point &lastPracticed, int highestLevel )
-    : SkillLevel( rng( minLevel, maxLevel ), rng( minExercise, maxExercise ), isTraining,
-                  lastPracticed, highestLevel )
-
-{
 }
 
 void SkillLevel::train( int amount, bool skip_scaling )
@@ -188,7 +157,7 @@ void SkillLevel::train( int amount, bool skip_scaling )
 
 namespace
 {
-int rustRate( int level )
+time_duration rustRate( int level )
 {
     // for n = [0, 7]
     //
@@ -197,20 +166,20 @@ int rustRate( int level )
     // 2^(n-1)
 
     unsigned const n = level < 0 ? 0 : level > 7 ? 7 : level;
-    return 1 << ( 15 - n + 1 );
+    return time_duration::from_turns( 1 << ( 15 - n + 1 ) );
 }
 } //namespace
 
 bool SkillLevel::isRusting() const
 {
     return get_option<std::string>( "SKILL_RUST" ) != "off" && ( _level > 0 ) &&
-           to_turns<int>( calendar::turn - _lastPracticed ) > rustRate( _level );
+           calendar::turn - _lastPracticed > rustRate( _level );
 }
 
 bool SkillLevel::rust( bool charged_bio_mem )
 {
     const time_duration delta = calendar::turn - _lastPracticed;
-    if( _level <= 0 || delta <= 0 || to_turns<int>( delta ) % rustRate( _level ) ) {
+    if( _level <= 0 || delta <= 0_turns || delta % rustRate( _level ) != 0_turns ) {
         return false;
     }
 
@@ -219,7 +188,7 @@ bool SkillLevel::rust( bool charged_bio_mem )
     }
 
     _exercise -= _level;
-    auto const &rust_type = get_option<std::string>( "SKILL_RUST" );
+    const auto &rust_type = get_option<std::string>( "SKILL_RUST" );
     if( _exercise < 0 ) {
         if( rust_type == "vanilla" || rust_type == "int" ) {
             _exercise = ( 100 * _level * _level ) - 1;
@@ -249,6 +218,102 @@ void SkillLevel::readBook( int minimumGain, int maximumGain, int maximumLevel )
 bool SkillLevel::can_train() const
 {
     return get_option<float>( "SKILL_TRAINING_SPEED" ) > 0.0;
+}
+
+const SkillLevel &SkillLevelMap::get_skill_level_object( const skill_id &ident ) const
+{
+    static const SkillLevel null_skill;
+
+    if( ident && ident->is_contextual_skill() ) {
+        debugmsg( "Skill \"%s\" is context-dependent. It cannot be assigned.", ident.str() );
+        return null_skill;
+    }
+
+    const auto iter = find( ident );
+
+    if( iter != end() ) {
+        return iter->second;
+    }
+
+    return null_skill;
+}
+
+SkillLevel &SkillLevelMap::get_skill_level_object( const skill_id &ident )
+{
+    static SkillLevel null_skill;
+
+    if( ident && ident->is_contextual_skill() ) {
+        debugmsg( "Skill \"%s\" is context-dependent. It cannot be assigned.", ident.str() );
+        return null_skill;
+    }
+
+    return ( *this )[ident];
+}
+
+void SkillLevelMap::mod_skill_level( const skill_id &ident, int delta )
+{
+    SkillLevel &obj = get_skill_level_object( ident );
+    obj.level( obj.level() + delta );
+}
+
+int SkillLevelMap::get_skill_level( const skill_id &ident ) const
+{
+    return get_skill_level_object( ident ).level();
+}
+
+int SkillLevelMap::get_skill_level( const skill_id &ident, const item &context ) const
+{
+    auto id = context.is_null() ? ident : context.contextualize_skill( ident );
+    return get_skill_level( id );
+}
+
+bool SkillLevelMap::meets_skill_requirements( const std::map<skill_id, int> &req ) const
+{
+    return meets_skill_requirements( req, item() );
+}
+
+bool SkillLevelMap::meets_skill_requirements( const std::map<skill_id, int> &req,
+        const item &context ) const
+{
+    return std::all_of( req.begin(), req.end(),
+    [this, &context]( const std::pair<skill_id, int> &pr ) {
+        return get_skill_level( pr.first, context ) >= pr.second;
+    } );
+}
+
+std::map<skill_id, int> SkillLevelMap::compare_skill_requirements(
+    const std::map<skill_id, int> &req ) const
+{
+    return compare_skill_requirements( req, item() );
+}
+
+std::map<skill_id, int> SkillLevelMap::compare_skill_requirements(
+    const std::map<skill_id, int> &req, const item &context ) const
+{
+    std::map<skill_id, int> res;
+
+    for( const auto &elem : req ) {
+        const int diff = get_skill_level( elem.first, context ) - elem.second;
+        if( diff != 0 ) {
+            res[elem.first] = diff;
+        }
+    }
+
+    return res;
+}
+
+int SkillLevelMap::exceeds_recipe_requirements( const recipe &rec ) const
+{
+    int over = rec.skill_used ? get_skill_level( rec.skill_used ) - rec.difficulty : 0;
+    for( const auto &elem : compare_skill_requirements( rec.required_skills ) ) {
+        over = std::min( over, elem.second );
+    }
+    return over;
+}
+
+bool SkillLevelMap::has_recipe_requirements( const recipe &rec ) const
+{
+    return exceeds_recipe_requirements( rec ) >= 0;
 }
 
 //Actually take the difference in barter skill between the two parties involved

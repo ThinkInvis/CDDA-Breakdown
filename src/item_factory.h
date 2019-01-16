@@ -2,15 +2,13 @@
 #ifndef ITEM_FACTORY_H
 #define ITEM_FACTORY_H
 
-#include <string>
-#include <memory>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <bitset>
-#include <memory>
-#include <list>
 #include <functional>
+#include <list>
+#include <map>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "itype.h"
 
@@ -29,7 +27,6 @@ class JsonObject;
 class JsonArray;
 
 extern std::unique_ptr<Item_factory> item_controller;
-
 
 class migration
 {
@@ -73,7 +70,6 @@ class Item_factory
          */
         void register_iuse_lua( const std::string &name, int lua_function );
 
-
         /**
          * @name Item groups
          *
@@ -116,7 +112,7 @@ class Item_factory
          *      "entries": [ x, y, z ]
          * }
          * \endcode
-         * Note that each entrie in the array has to be a JSON object. The other function above
+         * Note that each entry in the array has to be a JSON object. The other function above
          * can also load data from arrays of strings, where the strings are item or group ids.
          */
         void load_item_group( JsonArray &entries, const Group_tag &ident, bool is_collection,
@@ -141,7 +137,6 @@ class Item_factory
          */
         bool add_item_to_group( const Group_tag group_id, const Item_tag item_id, int weight );
         /*@}*/
-
 
         /**
          * @name Item type loading
@@ -251,7 +246,7 @@ class Item_factory
 
         mutable std::map<itype_id, std::unique_ptr<itype>> m_runtimes;
 
-        typedef std::map<Group_tag, Item_spawn_data *> GroupMap;
+        typedef std::map<Group_tag, std::unique_ptr<Item_spawn_data>> GroupMap;
         GroupMap m_template_groups;
 
         /** Checks that ammo is listed in ammunition_type::name().
@@ -279,7 +274,7 @@ class Item_factory
          * and calls @ref load to do the actual (type specific) loading.
          */
         template<typename SlotType>
-        void load_slot( std::unique_ptr<SlotType> &slotptr, JsonObject &jo, const std::string &src );
+        void load_slot( cata::optional<SlotType> &slotptr, JsonObject &jo, const std::string &src );
 
         /**
          * Load item the item slot if present in json.
@@ -287,7 +282,7 @@ class Item_factory
          * slot from that object. If the member does not exists, nothing is done.
          */
         template<typename SlotType>
-        void load_slot_optional( std::unique_ptr<SlotType> &slotptr, JsonObject &jo,
+        void load_slot_optional( cata::optional<SlotType> &slotptr, JsonObject &jo,
                                  const std::string &member, const std::string &src );
 
         void load( islot_tool &slot, JsonObject &jo, const std::string &src );
@@ -309,7 +304,7 @@ class Item_factory
         void load( islot_artifact &slot, JsonObject &jo, const std::string &src );
 
         //json data handlers
-        void set_use_methods_from_json( JsonObject &jo, std::string member,
+        void set_use_methods_from_json( JsonObject &jo, const std::string &member,
                                         std::map<std::string, use_function> &use_methods );
 
         use_function usage_from_string( const std::string &type ) const;
@@ -332,10 +327,9 @@ class Item_factory
         bool load_sub_ref( std::unique_ptr<Item_spawn_data> &ptr, JsonObject &obj,
                            const std::string &name, const Item_group &parent );
         bool load_string( std::vector<std::string> &vec, JsonObject &obj, const std::string &name );
-        void add_entry( Item_group *sg, JsonObject &obj );
+        void add_entry( Item_group &sg, JsonObject &obj );
 
         void load_basic_info( JsonObject &jo, itype &def, const std::string &src );
-        void tags_from_json( JsonObject &jo, std::string member, std::set<std::string> &tags );
         void set_qualities_from_json( JsonObject &jo, const std::string &member, itype &def );
         void set_properties_from_json( JsonObject &jo, const std::string &member, itype &def );
 
@@ -355,12 +349,14 @@ class Item_factory
         std::map<Item_tag, use_function> iuse_function_list;
 
         void add_iuse( const std::string &type, const use_function_pointer f );
+        void add_iuse( const std::string &type, const use_function_pointer f,
+                       const std::string &info );
         void add_actor( iuse_actor *ptr );
 
         std::map<itype_id, migration> migrations;
 
         /**
-         * Contains the tool subtype mappings for crafing (ie. mess kit is a hotplate etc.).
+         * Contains the tool subtype mappings for crafting (i.e. mess kit is a hotplate etc.).
          * This is should be obsoleted when @ref requirement_data allows AND/OR nesting.
          */
         std::map<itype_id, std::set<itype_id>> tool_subtypes;

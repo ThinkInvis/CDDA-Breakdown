@@ -3,6 +3,7 @@
 #define MATTACK_COMMON_H
 
 #include <memory>
+#include <string>
 
 class JsonObject;
 class monster;
@@ -25,7 +26,7 @@ class mattack_actor
 
         void load( JsonObject &jo, const std::string &src );
 
-        virtual ~mattack_actor() { }
+        virtual ~mattack_actor() = default;
         virtual bool call( monster & ) const = 0;
         virtual mattack_actor *clone() const = 0;
         virtual void load_internal( JsonObject &jo, const std::string &src ) = 0;
@@ -33,17 +34,17 @@ class mattack_actor
 
 struct mtype_special_attack {
     protected:
-        // @todo Remove friend
+        // @todo: Remove friend
         friend struct mtype;
         std::unique_ptr<mattack_actor> actor;
 
     public:
         mtype_special_attack( const mattack_id &id, mon_action_attack f );
-        mtype_special_attack( mattack_actor *f ) : actor( f ) { };
+        mtype_special_attack( mattack_actor *f ) : actor( f ) { }
         mtype_special_attack( const mtype_special_attack &other ) :
-            mtype_special_attack( other.actor->clone() ) { };
+            mtype_special_attack( other.actor->clone() ) { }
 
-        ~mtype_special_attack();
+        ~mtype_special_attack() = default;
 
         void operator=( const mtype_special_attack &other ) {
             actor.reset( other.actor->clone() );

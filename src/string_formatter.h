@@ -2,15 +2,14 @@
 #ifndef STRING_FORMATTER_H
 #define STRING_FORMATTER_H
 
-//@todo replace with std::optional
-#include "optional.h"
-#include "compatibility.h"
-#include "printf_check.h"
-
 #include <string>
-#include <typeinfo>
 #include <type_traits>
+#include <typeinfo>
 #include <utility>
+
+#include "compatibility.h" // needed for the workaround for the std::to_string bug in some compilers
+//@todo: replace with std::optional
+#include "optional.h"
 
 namespace cata
 {
@@ -21,7 +20,7 @@ class string_formatter;
 [[noreturn]]
 void throw_error( const string_formatter &, const std::string & );
 // wrapper to access string_formatter::temp_buffer before the definition of string_formatter
-const char *string_formatter_set_temp_buffer( const string_formatter &, std::string );
+const char *string_formatter_set_temp_buffer( const string_formatter &, const std::string & );
 // Handle currently active exception from string_formatter and return it as string
 std::string handle_string_format_error();
 
@@ -136,7 +135,6 @@ is_cstring<T>::value, RT >::type convert( RT *, const string_formatter &sf, T &&
 {
     throw_error( sf, "Tried to convert argument of type " + std::string( typeid(
                      T ).name() ) + " to " + std::string( typeid( RT ).name() ) + ", which is not possible" );
-    return *static_cast<RT *>( nullptr ); // dummy return, will not be reached ever
 }
 /**@}*/
 
@@ -145,7 +143,7 @@ is_cstring<T>::value, RT >::type convert( RT *, const string_formatter &sf, T &&
  * See @ref string_format for usage.
  * Basically it extracts the format specifiers and calls `sprintf` for each one separately
  * and with proper conversion of the input type.
- * For example `printf("%f", 7)` would yield undefined behaviour as "%f" requires a `double`
+ * For example `printf("%f", 7)` would yield undefined behavior as "%f" requires a `double`
  * as argument. This class detects the format specifier and converts the input to `double`
  * before calling `sprintf`. Similar for `printf("%d", "foo")` (yields UB again), but this
  * class will just throw an exception.
@@ -212,7 +210,7 @@ class string_formatter
         /// for printing non-strings through "%s". It *only* works because this prints each format
         /// specifier separately, so the content of @ref temp_buffer is only used once.
         friend const char *string_formatter_set_temp_buffer( const string_formatter &sf,
-                std::string text ) {
+                const std::string &text ) {
             sf.temp_buffer = text;
             return sf.temp_buffer.c_str();
         }
@@ -228,7 +226,6 @@ class string_formatter
         RT get_nth_arg_as( const unsigned int requested ) const {
             throw_error( "Requested argument " + to_string( requested ) + " but input has only " + to_string(
                              current_index ) );
-            return *static_cast<RT *>( nullptr ); // dummy return, never reached anyway
         }
         template<typename RT, unsigned int current_index, typename T, typename ...Args>
         RT get_nth_arg_as( const unsigned int requested, T &&head, Args &&... args ) const {
@@ -290,11 +287,8 @@ class string_formatter
                                          std::forward<Args>( args )... ) );
                 default:
                     throw_error( "Unsupported format conversion: " + std::string( 1, c ) );
-                    break;
             }
         }
-
-        static std::string raw_string_format( const char *pattern, ... ) PRINTF_LIKE( 1, 2 );
 
         template<typename T>
         void do_formating( T &&value ) {
@@ -344,6 +338,22 @@ class string_formatter
         std::string get_output() const {
             return output;
         }
+#if defined(__clang__)
+#define PRINTF_LIKE(a,b) __attribute__((format(printf,a,b)))
+#elif defined(__GNUC__)
+#define PRINTF_LIKE(a,b) __attribute__((format(gnu_printf,a,b)))
+#else
+#define PRINTF_LIKE(a,b)
+#endif
+        /**
+         * Wrapper for calling @ref vsprintf - see there for documentation. Try to avoid it as it's
+         * not type safe and may easily lead to undefined behavior - use @ref string_format instead.
+         * @throws std::exception if the format is invalid / does not match the arguments, but that's
+         * not guaranteed - technically it's undefined behaviour.
+         */
+        // Implemented in output.cpp
+        static std::string raw_string_format( const char *pattern, ... ) PRINTF_LIKE( 1, 2 );
+#undef PRINTF_LIKE
 };
 
 } // namespace cata

@@ -1,13 +1,12 @@
 #pragma once
-#ifndef PATHFINDIND_H
-#define PATHFINDIND_H
-
-#include "debug.h"
-#include "enums.h"
+#ifndef SIMPLE_PATHFINDINDING_H
+#define SIMPLE_PATHFINDINDING_H
 
 #include <limits>
 #include <queue>
 #include <vector>
+
+#include "enums.h"
 
 namespace pf
 {
@@ -43,8 +42,8 @@ struct path {
 /**
  * @param source Starting point of path
  * @param dest End point of path
- * @param max_x Max permissable x coordinate for a point on the path
- * @param max_y Max permissable y coordinate for a point on the path
+ * @param max_x Max permissible x coordinate for a point on the path
+ * @param max_y Max permissible y coordinate for a point on the path
  * @param estimator BinaryPredicate( node &previous, node *current ) returns
  * integer estimation (smaller - better) for the current node or a negative value
  * if the node is unsuitable.
@@ -93,7 +92,7 @@ path find_path( const point &source,
     std::vector<bool> closed( map_size, false );
     std::vector<int> open( map_size, 0 );
     std::vector<short> dirs( map_size, 0 );
-    std::priority_queue<node, std::deque<node>> nodes[2];
+    std::priority_queue<node, std::vector<node>> nodes[2];
 
     int i = 0;
     nodes[i].push( first_node );

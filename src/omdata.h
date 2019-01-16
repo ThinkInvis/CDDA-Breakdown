@@ -2,19 +2,17 @@
 #ifndef OMDATA_H
 #define OMDATA_H
 
+#include <bitset>
+#include <list>
+#include <set>
+#include <vector>
+
 #include "color.h"
 #include "common_types.h"
 #include "enums.h"
 #include "int_id.h"
 #include "string_id.h"
 #include "translations.h"
-
-#include <string>
-#include <vector>
-#include <limits>
-#include <list>
-#include <bitset>
-#include <set>
 
 struct MonsterGroup;
 using mongroup_id = string_id<MonsterGroup>;
@@ -81,10 +79,10 @@ type opposite( type dir );
 /** Returns a random direction. */
 type random();
 
-/** Whether these directions are parralell. */
+/** Whether these directions are parallel. */
 bool are_parallel( type dir1, type dir2 );
 
-};
+}
 
 struct overmap_spawns {
         overmap_spawns() : group( mongroup_id::NULL_ID() ) {}
@@ -127,6 +125,7 @@ enum oter_flags {
     river_tile,
     has_sidewalk,
     line_drawing, // does this tile have 8 versions, including straights, bends, tees, and a fourway?
+    subway_connection,
     num_oter_flags
 };
 
@@ -140,7 +139,7 @@ struct oter_type_t {
     public:
         string_id<oter_type_t> id;
         std::string name;               // Untranslated name
-        long sym = '\0';                // This is a long, so we can support curses linedrawing
+        long sym = '\0';                // This is a long, so we can support curses line drawing
         nc_color color = c_black;
         unsigned char see_cost = 0;     // Affects how far the player can see in the overmap
         std::string extras = "none";
@@ -262,14 +261,13 @@ struct oter_t {
 
     private:
         om_direction::type dir = om_direction::type::none;
-        long sym = '\0';         // This is a long, so we can support curses linedrawing.
+        long sym = '\0';         // This is a long, so we can support curses line drawing.
         size_t line = 0;         // Index of line. Only valid in case of line drawing.
 };
 
 // @todo: Deprecate these operators
 bool operator==( const oter_id &lhs, const char *rhs );
 bool operator!=( const oter_id &lhs, const char *rhs );
-
 
 // LINE_**** corresponds to the ACS_**** macros in ncurses, and are patterned
 // the same way; LINE_NESW, where X indicates a line and O indicates no line
@@ -300,7 +298,7 @@ struct overmap_special_spawns : public overmap_spawns {
 };
 
 struct overmap_special_terrain {
-    overmap_special_terrain() { };
+    overmap_special_terrain() {}
     tripoint p;
     oter_str_id terrain;
     std::set<std::string> flags;
@@ -326,6 +324,7 @@ struct overmap_special_connection {
         jo.read( "point", p );
         jo.read( "terrain", terrain );
         jo.read( "existing", existing );
+        jo.read( "connection", connection );
     }
 };
 
@@ -372,7 +371,7 @@ void check_consistency();
 void finalize();
 void reset();
 
-size_t count();
+const std::vector<oter_t> &get_all();
 
 }
 
@@ -383,6 +382,9 @@ void load( JsonObject &jo, const std::string &src );
 void finalize();
 void check_consistency();
 void reset();
+
+const std::vector<overmap_special> &get_all();
+
 overmap_special_batch get_default_batch( const point &origin );
 /**
  * Generates a simple special from a building id.

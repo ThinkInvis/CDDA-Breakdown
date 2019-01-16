@@ -16,12 +16,13 @@ struct tripoint;
 using target_callback = std::function<const itype *( item *obj )>;
 using firing_callback = std::function<void( const int )>;
 
-enum target_mode {
+enum target_mode : int {
     TARGET_MODE_FIRE,
     TARGET_MODE_THROW,
     TARGET_MODE_TURRET,
     TARGET_MODE_TURRET_MANUAL,
-    TARGET_MODE_REACH
+    TARGET_MODE_REACH,
+    TARGET_MODE_THROW_BLIND
 };
 
 // @todo: move callbacks to a new struct and define some constructors for ease of use

@@ -2,16 +2,16 @@
 #ifndef INVENTORY_H
 #define INVENTORY_H
 
-#include "visitable.h"
-#include "item.h"
-#include "enums.h"
-
+#include <array>
 #include <list>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
-#include <functional>
-#include <unordered_map>
+
+#include "enums.h"
+#include "item.h"
+#include "visitable.h"
 
 class map;
 class npc;
@@ -33,8 +33,6 @@ class salvage_actor;
  */
 class invlet_wrapper : private std::string
 {
-    private:
-
     public:
         invlet_wrapper( const char *chars ) : std::string( chars ) { }
 
@@ -53,6 +51,27 @@ class invlet_wrapper : private std::string
 
 const extern invlet_wrapper inv_chars;
 
+// For each item id, store a set of "favorite" inventory letters.
+// This class maintains a bidirectional mapping between invlet letters and item ids.
+// Each invlet has at most one id and each id has any number of invlets.
+class invlet_favorites
+{
+    public:
+        invlet_favorites() = default;
+        invlet_favorites( const std::unordered_map<itype_id, std::string> & );
+
+        void set( char invlet, const itype_id & );
+        void erase( char invlet );
+        bool contains( char invlet, const itype_id & ) const;
+        std::string invlets_for( const itype_id & ) const;
+
+        // For serialization only
+        const std::unordered_map<itype_id, std::string> &get_invlets_by_id() const;
+    private:
+        std::unordered_map<itype_id, std::string> invlets_by_id;
+        std::array<itype_id, 256> ids_by_invlet;
+};
+
 class inventory : public visitable<inventory>
 {
     public:
@@ -62,7 +81,6 @@ class inventory : public visitable<inventory>
         const_invslice const_slice() const;
         const std::list<item> &const_stack( int i ) const;
         size_t size() const;
-        bool is_sorted() const;
 
         std::map<char, itype_id> assigned_invlet;
 
@@ -81,11 +99,11 @@ class inventory : public visitable<inventory>
         inventory  operator+ ( const std::list<item> &rhs );
 
         void unsort(); // flags the inventory as unsorted
-        void sort();
         void clear();
-        void push_back( std::list<item> newits );
+        void push_back( const std::list<item> &newits );
         // returns a reference to the added item
-        item &add_item( item newit, bool keep_invlet = false, bool assign_invlet = true );
+        item &add_item( item newit, bool keep_invlet = false, bool assign_invlet = true,
+                        bool should_stack = true );
         void add_item_keep_invlet( item newit );
         void push_back( item newit );
 
@@ -93,7 +111,7 @@ class inventory : public visitable<inventory>
          * game pointer is not necessary, but if supplied, will ensure no overlap with
          * the player's worn items / weapon
          */
-        void restack( player *p = NULL );
+        void restack( player &p );
 
         void form_from_map( const tripoint &origin, int distance, bool assign_invlet = true );
 
@@ -123,7 +141,8 @@ class inventory : public visitable<inventory>
          * the container. All items that are part of the same stack have the same item position.
          */
         int position_by_item( const item *it ) const;
-        int position_by_type( itype_id type );
+        int position_by_type( const itype_id &type ) const;
+
         /** Return the item position of the item with given invlet, return INT_MIN if
          * the inventory does not have such an item with that invlet. Don't use this on npcs inventory. */
         int invlet_to_position( char invlet ) const;
@@ -132,9 +151,9 @@ class inventory : public visitable<inventory>
         //        "charges" refers to charges
         std::list<item> use_amount( itype_id it, int quantity );
 
-        bool has_tools( itype_id it, int quantity ) const;
-        bool has_components( itype_id it, int quantity ) const;
-        bool has_charges( itype_id it, long quantity ) const;
+        bool has_tools( const itype_id &it, int quantity ) const;
+        bool has_components( const itype_id &it, int quantity ) const;
+        bool has_charges( const itype_id &it, long quantity ) const;
 
         int leak_level( std::string flag ) const; // level of leaked bad stuff from items
 
@@ -148,7 +167,9 @@ class inventory : public visitable<inventory>
         void rust_iron_items();
 
         units::mass weight() const;
+        units::mass weight_without( const std::map<const item *, int> & ) const;
         units::volume volume() const;
+        units::volume volume_without( const std::map<const item *, int> & ) const;
 
         // dumps contents into dest (does not delete contents)
         void dump( std::vector<item *> &dest );
@@ -162,13 +183,10 @@ class inventory : public visitable<inventory>
         void json_save_invcache( JsonOut &jsout ) const;
         void json_save_items( JsonOut &jsout ) const;
 
-        item nullitem;
-        std::list<item> nullstack;
-
         // Assigns an invlet if any remain.  If none do, will assign ` if force is
         // true, empty (invlet = 0) otherwise.
-        void assign_empty_invlet( item &it, Character *p, bool force = false );
-        // Assigns the item with the given invlet, and updates the favourite invlet cache. Does not check for uniqueness
+        void assign_empty_invlet( item &it, const Character &p, bool force = false );
+        // Assigns the item with the given invlet, and updates the favorite invlet cache. Does not check for uniqueness
         void reassign_item( item &it, char invlet, bool remove_old = true );
         // Removes invalid invlets, and assigns new ones if assign_invlet is true. Does not update the invlet cache.
         void update_invlet( item &it, bool assign_invlet = true );
@@ -183,13 +201,13 @@ class inventory : public visitable<inventory>
 
         void update_cache_with_item( item &newit );
 
+        void copy_invlet_of( const inventory &other );
+
     private:
-        // For each item ID, store a set of "favorite" inventory letters.
-        std::map<std::string, std::vector<char> > invlet_cache;
+        invlet_favorites invlet_cache;
         char find_usable_cached_invlet( const std::string &item_type );
 
         invstack items;
-        bool sorted;
 
         mutable bool binned;
         /**

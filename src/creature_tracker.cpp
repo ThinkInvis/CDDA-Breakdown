@@ -1,19 +1,17 @@
 #include "creature_tracker.h"
-#include "pathfinding.h"
-#include "monster.h"
-#include "mongroup.h"
-#include "string_formatter.h"
-#include "debug.h"
-#include "mtype.h"
-#include "item.h"
 
 #include <algorithm>
 
+#include "debug.h"
+#include "item.h"
+#include "mongroup.h"
+#include "monster.h"
+#include "mtype.h"
+#include "string_formatter.h"
+
 #define dbg(x) DebugLog((DebugLevel)(x),D_GAME) << __FILE__ << ":" << __LINE__ << ": "
 
-Creature_tracker::Creature_tracker()
-{
-}
+Creature_tracker::Creature_tracker() = default;
 
 Creature_tracker::~Creature_tracker() = default;
 
@@ -52,7 +50,7 @@ std::shared_ptr<monster> Creature_tracker::from_temporary_id( const int id )
 
 bool Creature_tracker::add( monster &critter )
 {
-    if( critter.type->id.is_null() ) { // Don't wanna spawn null monsters o.O
+    if( critter.type->id.is_null() ) { // Don't want to spawn null monsters o.O
         return false;
     }
 
@@ -129,8 +127,6 @@ bool Creature_tracker::update_pos( const monster &critter, const tripoint &new_p
         rebuild_cache();
         return false;
     }
-
-    return false;
 }
 
 void Creature_tracker::remove_from_location_map( const monster &critter )
@@ -216,13 +212,15 @@ bool Creature_tracker::kill_marked_for_death()
     // been removed, the dying creature could still have a pointer (the killer) to another creature.
     bool monster_is_dead = false;
     for( const auto &mon_ptr : monsters_list ) {
-        monster &critter = *mon_ptr;
-        if( critter.is_dead() ) {
-            dbg( D_INFO ) << string_format( "cleanup_dead: critter %d,%d,%d hp:%d %s",
-                                            critter.posx(), critter.posy(), critter.posz(),
-                                            critter.get_hp(), critter.name().c_str() );
-            critter.die( nullptr );
-            monster_is_dead = true;
+        if( mon_ptr != nullptr ) {
+            monster &critter = *mon_ptr;
+            if( critter.is_dead() ) {
+                dbg( D_INFO ) << string_format( "cleanup_dead: critter %d,%d,%d hp:%d %s",
+                                                critter.posx(), critter.posy(), critter.posz(),
+                                                critter.get_hp(), critter.name().c_str() );
+                critter.die( nullptr );
+                monster_is_dead = true;
+            }
         }
     }
 
