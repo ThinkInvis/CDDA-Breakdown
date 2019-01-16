@@ -1544,9 +1544,9 @@ int iuse::sew_advanced( player *p, item *it, bool, const tripoint & )
         has_enough[material] = crafting_inv.has_amount( material, items_needed );
     }
 
-    const int mod_count = mod->item_tags.count("wooled") + mod->item_tags.count("furred") +
-                          mod->item_tags.count("leather_padded") + mod->item_tags.count("kevlar_padded") +
-                          mod->item_tags.count("mut_fit");
+    const int mod_count = mod.item_tags.count("wooled") + mod.item_tags.count("furred") +
+                          mod.item_tags.count("leather_padded") + mod.item_tags.count("kevlar_padded") +
+                          mod.item_tags.count("mut_fit");
 
     // We need extra thread to lose it on bad rolls
     const int thread_needed = mod.volume() / 125_ml + 10;
@@ -1604,8 +1604,8 @@ int iuse::sew_advanced( player *p, item *it, bool, const tripoint & )
     temp_item = modded_copy( mod, "mut_fit" );
     enab = can_add_mod( "mut_fit", "rag" );
     tmenu.addentry( 4, enab, MENU_AUTOASSIGN, _("%s (Allow Wearing with Mutations, Encumbrance: %d->%d)"), //BDTODO: just using the Fits tag for now
-        mod->item_tags.count("mut_fit") == 0 ? _("Fit to Mutations [NYI]") : _("Restore to Standard [NYI]"),
-        mod->get_encumber(), temp_item.get_encumber() );
+        mod.item_tags.count("mut_fit") == 0 ? _("Fit to Mutations [NYI]") : _("Restore to Standard [NYI]"),
+        mod.get_encumber( *p ), temp_item.get_encumber( *p ) );
 
     // tmenu.addentry( 4, true, 'q', _("Cancel") );
     tmenu.addentry( 5, true, 'q', _("Cancel") );
