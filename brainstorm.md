@@ -112,16 +112,23 @@ New traits allow interlock between these resources:
 * Druid: "Your body has been attuned to nature; the world grants you Mana in random fits and starts."
 * Warlock: "Through deep concentration, you have attuned your mind to resonate with the magic that has been introduced to the world. Your Mana slowly but steadily refills over time."
 * Atronach: "Your body has been attuned to magic itself; you can restore your Mana by killing creatures or absorbing it from artifacts."
+#### Elemental Magic
+Core: Air, Water, Fire, Earth
+Elements combine/split into new elements
+Radiation, Light, Darkness, Negation, Metal, Stone, Ice, Steam, Electricity, Sound, Force, Pressure, Gravity, Mud, Plant
 #### Using Magic
 ##### Spells
 ##### Scrolls
 Scrolls are single spell casts infused on paper, along with most of the mana required to cast them. These cost more mana than a spell cast, decreasing with [some stat].
 ##### Enchanting
+Semi-permanent (until object is destroyed/used) mana cost for more powerful enchantments?
 ##### Artifacts
 Artifacts are "skinned" scrolls and enchanted objects that can be randomly found in the world or on NPCs, with powerful effects.
 Artifacts can be researched to gain skill or recipes (and potentially destroy the item!).
 ##### Magical Research
 Mana traits give bonuses to different matching types of research. An Atronach can learn more about magic by absorbing magic; a Warlock can learn more slowly by simply being around high concentrations of magic; a Druid learns more randomly; a Sorcerer learns by casting; a Wizard learns more by directly researching items and studying.
+##### Alchemy
+Potions, poison (for weapons or grenades?), poultices
 ## Minor Features
 These can be partially implemented without much effort, disregarding dependencies on major features (which need not be added immediately).
 ### Gear Modification
@@ -164,6 +171,11 @@ Dwarf Fortress: zombie edition!
 #### Baited animal/fish traps (if not present already)
 #### Shields
 #### Sling (if not present already)
+### Tweaks
+Changes to C:DDA behavior that could still fit in the vanilla game.
+#### Add flags to enemies to track whether the player has elected to ignore visual/sound alerts from them
+Goal is to stop "x spotted" repeatedly when an enemy wanders in and out of range/behind an object
+#### Allow tearing down curtains from open curtains/open windows
 ### Feature changes/removals
 Overrides undesired changes made in previous C:DDA patches, or adds changes that are pretty much completely just cheats.
 #### "Unpackage All" command for powders, chips, etc. in inventory
@@ -190,6 +202,8 @@ Just plain OpenGL?
 ## Various Notes
 - Allow crafting in dark with higher stats req/fail chance? Or with mutations?
 - Allow refilling vehicle tanks from stored items (e.g. in cargo space)? May just be that the refill option doesn't detect Gasoline Lantern
+- Specify in toaster pastry description that they're frozen... add "freeze"/"refrigerate" tags to food items?
+- Add freezer vehicle part/furniture that has higher energy cost+lower capacity, but preserves longer?
 ### on New Mutations for races, etc. and spell effects
 Arcanavore: Able to eat magical items for sustenance.
 Infernal Metabolism: Able to eat just about anything for sustenance (similar to Internal Furnace CBM).
