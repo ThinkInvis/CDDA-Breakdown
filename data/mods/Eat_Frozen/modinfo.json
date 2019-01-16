@@ -1,0 +1,24 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "eat_frozen",
+    "name": "Eatable Frozen",
+    "description": "Makes all food and drink edible while frozen, and prevents fluids in vehicle tanks from freezing.",
+    "category": "rebalance",
+    "dependencies": [ "dda" ]
+  },
+  {
+    "type": "EXTERNAL_OPTION",
+    "name": "EAT_FROZEN",
+    "info": "If true, comestible items will remain edible while frozen instead of returning 'frozen solid' messages.",
+    "stype": "bool",
+    "value": true
+  },
+  {
+    "type": "EXTERNAL_OPTION",
+    "name": "VEH_ANTIFREEZE",
+    "info": "If true, fluids in vehicle tanks will never freeze.",
+    "stype": "bool",
+    "value": true
+  }
+]
