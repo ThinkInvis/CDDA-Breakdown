@@ -4,23 +4,23 @@
         "id" : "mutation_dragon",
         "name" : "Dragon",
         "threshold_mut" : "THRESH_DRAGON",
-        "mutagen_message" : ".",
-        "iv_message" : ".",
+        "mutagen_message" : "You feel an overwhelming sense of... pride?",
+        "iv_message" : "Fire courses through your veins.",
         "memorial_message" : "Started their hoard."
     },{
 		"type" : "mutation_category",
         "id" : "mutation_crystal",
         "name" : "Crystalline",
         "threshold_mut" : "THRESH_CRYSTAL",
-        "mutagen_message" : ".",
-        "iv_message" : ".",
-        "memorial_message" : "Solidified their priorities, and also their body."
+        "mutagen_message" : "A resonant chiming echoes within your bones.",
+        "iv_message" : "For a second, you feel your senses refract.",
+        "memorial_message" : "Solidified their priorities."
     },{
         "type" : "mutation",
         "id" : "THRESH_DRAGON",
         "name" : "Dragon",
         "points" : 1,
-        "description" : "You can't quite remember what you were before, but you're better now. Your glorious scales and magnificent horns are proof of that... and anyone who tells you otherwise WILL TASTE THE FURY OF THE ELEMENTS.",
+        "description" : "This Cataclysm lit a fire in your temperament and body both.  Whatever's left of the world, well, it's clearly YOURS.",
         "valid": false,
         "purifiable": false,
         "threshold": true
@@ -29,7 +29,7 @@
         "id" : "THRESH_CRYSTAL",
         "name" : "Crystalline",
         "points" : 1,
-        "description" : "You've long left behind the primitive concepts of 'organic matter' and 'laws of physics'. Also, you look really pretty when light hits you! So shiny...",
+        "description" : "You've long left behind the primitive concepts of 'organic matter' and 'laws of physics'.  The constant shining is a little distracting, though.",
         "valid": false,
         "purifiable": false,
         "threshold": true
