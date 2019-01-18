@@ -3613,6 +3613,9 @@ void item::calc_rot( const tripoint &location )
             factor = 0.75;
         }
 
+        // BD world rot modifier
+        factor *= get_option<int>("SPOIL_SCALING") / 100.0;
+
         // simulation of different age of food at calendar::time_of_cataclysm and good/bad storage
         // conditions by applying starting variation bonus/penalty of +/- 20% of base shelf-life
         // positive = food was produced some time before calendar::time_of_cataclysm and/or bad storage

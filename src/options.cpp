@@ -1706,6 +1706,11 @@ void options_manager::add_options_world_default()
          0, 1000, 100
        );
 
+    add("SPOIL_SCALING", "world_default", translate_marker("Spoilage scaling"),
+        translate_marker("Sets how fast perishables spoil in percents.  '50' is two times slower than default, '200' is two times faster.  Warning: this is not reflected by ingame descriptions of spoil times."),
+        0, 1000, 100
+    );
+
     add( "ETERNAL_SEASON", "world_default", translate_marker( "Eternal season" ),
          translate_marker( "Keep the initial season for ever." ),
          false
