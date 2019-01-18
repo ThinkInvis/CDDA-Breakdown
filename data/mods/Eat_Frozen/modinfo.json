@@ -2,7 +2,7 @@
   {
     "type": "MOD_INFO",
     "ident": "eat_frozen",
-    "name": "Eatable Frozen",
+    "name": "Edible Frozen",
     "description": "Makes all food and drink edible while frozen, and prevents fluids in vehicle tanks from freezing.",
     "category": "rebalance",
     "dependencies": [ "dda" ]
