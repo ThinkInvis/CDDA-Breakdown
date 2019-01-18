@@ -1,0 +1,278 @@
+[
+	{
+        "id": "dry_beans",
+        "copy-from": "dry_beans",
+        "type": "COMESTIBLE",
+		"name": "dried beans",
+		"name_plural": "dried beans",
+		"description": "Dehydrated great northern beans.  Tasty and nutritious when cooked, virtually inedible when dry.",
+        "spoils_in": 0
+    },{
+        "id": "hardtack",
+        "copy-from": "hardtack",
+        "type": "COMESTIBLE",
+		"name": "hardtack",
+		"description": "A dry and virtually tasteless bread product capable of remaining edible without spoilage for vast lengths of time.",
+        "spoils_in": 0
+    },{
+        "id": "tallow",
+        "copy-from": "tallow",
+        "type": "COMESTIBLE",
+		"name": "tallow",
+		"description": "A smooth white block of cleaned and rendered animal fat.  It will remain edible for a very long time, and can be used as an ingredient in many foods and projects.",
+        "spoils_in": 0
+    },{
+        "id": "lard",
+        "copy-from": "lard",
+        "type": "COMESTIBLE",
+		"name": "lard",
+		"description": "A smooth white block of dry-rendered animal fat.  It will remain edible for a very long time, and can be used as an ingredient in many foods and projects.",
+        "spoils_in": 0
+    },{
+        "id": "jerky",
+        "copy-from": "jerky",
+        "type": "COMESTIBLE",
+		"name": "meat jerky",
+		"name_plural": "meat jerky",
+		"description": "Salty dried meat that lasts for a long time, but will make you thirsty.",
+        "spoils_in": 0
+    },{
+        "id": "salted_fish",
+        "copy-from": "salted_fish",
+        "type": "COMESTIBLE",
+		"name": "salted fish",
+		"name_plural": "salted fish",
+		"description": "Salty dried fish that lasts for a long time, but will make you thirsty.",
+        "spoils_in": 0
+    },{
+        "id": "jerky_human",
+        "copy-from": "jerky_human",
+        "type": "COMESTIBLE",
+		"name": "jerk jerky",
+		"name_plural": "jerk jerky",
+		"description": "Salty dried human flesh that lasts for a long time, but will make you thirsty.",
+        "spoils_in": 0
+    },{
+        "id": "meat_smoked",
+        "copy-from": "meat_smoked",
+        "type": "COMESTIBLE",
+		"name": "smoked meat",
+		"description": "Tasty meat that has been heavily smoked for preservation.  It could be further smoked to dehydrate it completely.",
+        "spoils_in": 0
+    },{
+        "id": "fish_smoked",
+        "copy-from": "fish_smoked",
+        "type": "COMESTIBLE",
+		"name": "smoked fish",
+		"name_plural": "smoked fish",
+		"description": "Tasty fish that has been heavily smoked for long term preservation.  It could be further smoked to dehydrate it completely.",
+        "spoils_in": 0
+    },{
+        "id": "human_smoked",
+        "copy-from": "human_smoked",
+        "type": "COMESTIBLE",
+		"name": "smoked sucker",
+		"description": "A heavily smoked portion of human flesh.  Lasts for a long time and tastes pretty good, if you like that sort of thing.",
+        "spoils_in": 0
+    },{
+        "id": "cheese_hard",
+        "copy-from": "cheese_hard",
+        "type": "COMESTIBLE",
+		"name": "hard cheese",
+		"name_plural": "hard cheese",
+		"description": "Hard, dry cheese made to last, unlike modern processed cheese.  Will make you thirsty though.",
+        "spoils_in": 0
+    },{
+        "id": "fruit_leather",
+        "copy-from": "fruit_leather",
+        "type": "COMESTIBLE",
+		"name": "fruit leather",
+		"description": "Dried strips of sugary fruit paste.",
+        "spoils_in": 0
+    },{
+        "id": "dry_fruit",
+        "copy-from": "dry_fruit",
+        "type": "COMESTIBLE",
+		"name": "dehydrated fruit",
+		"name_plural": "dehydrated fruit",
+		"description": "Dehydrated fruit flakes.  With proper storage, this dried food will remain edible for an incredibly long time.  They are useful for several cooking recipes.",
+        "spoils_in": 0
+    },{
+        "id": "sausage",
+        "copy-from": "sausage",
+        "type": "COMESTIBLE",
+		"name": "sausage",
+		"description": "A hefty sausage that has been cured and smoked for long term storage.",
+        "spoils_in": 0
+    },{
+        "id": "bacon",
+        "copy-from": "bacon",
+        "type": "COMESTIBLE",
+		"name": "bacon",
+		"name_plural": "pieces of bacon",
+		"description": "A thick slab of salty cured bacon.  Shelf stable, precooked and ready-to-eat, it tastes better when reheated.",
+        "spoils_in": 0
+    },{
+        "id": "sausage_wasteland",
+        "copy-from": "sausage_wasteland",
+        "type": "COMESTIBLE",
+		"name": "wasteland sausage",
+		"description": "Lean sausage made from heavily salt-cured offal, with natural gut casing.  Waste not, want not.",
+        "spoils_in": 0
+    },{
+        "id": "dry_fish",
+        "copy-from": "dry_fish",
+        "type": "COMESTIBLE",
+		"name": "dehydrated fish",
+		"name_plural": "dehydrated fish",
+		"description": "Dehydrated fish flakes.  With proper storage, this dried food will remain edible for an incredibly long time.",
+        "spoils_in": 0
+    },{
+        "id": "lutefisk",
+        "copy-from": "lutefisk",
+        "type": "COMESTIBLE",
+		"name": "lutefisk",
+		"description": "Lutefisk is preserved fish that has been dried in a lye solution.  Vile and soap-like yet highly nutritious, it is reminiscent of the afterbirth of a dog or the world's largest chunk of phlegm.",
+        "spoils_in": 0
+    },{
+        "id": "pemmican",
+        "copy-from": "pemmican",
+        "type": "COMESTIBLE",
+		"name": "pemmican",
+		"description": "A concentrated mixture of fat and protein used as a nutritious high-energy food.  Composed of meat, tallow, and edible plants, it provides excellent nutrition in an easy to carry form.",
+        "spoils_in": 0
+    },{
+        "id": "dry_meat",
+        "copy-from": "dry_meat",
+        "type": "COMESTIBLE",
+		"name": "dehydrated meat",
+		"description": "Dehydrated meat flakes.  With proper storage, this dried food will remain edible for an incredibly long time.",
+        "spoils_in": 0
+    },{
+        "id": "dry_meat_tainted",
+        "copy-from": "dry_meat_tainted",
+        "type": "COMESTIBLE",
+		"name": "dehydrated tainted meat",
+		"description": "Pieces of poisonous meat that have been dried to prevent them from rotting away.  It will still poison you if you eat this.",
+        "spoils_in": 0
+    },{
+        "id": "dry_mushroom",
+        "copy-from": "dry_mushroom",
+        "type": "COMESTIBLE",
+		"name": "dried mushroom",
+		"description": "Dried mushrooms are a tasty and healthy addition to many meals.",
+        "spoils_in": 0
+    },{
+        "id": "dry_mushroom_magic",
+        "copy-from": "dry_mushroom_magic",
+        "type": "COMESTIBLE",
+		"name": "dried hallucinogenic mushroom",
+		"description": "A hallucinogenic mushroom which has been dehydrated for storage.  Will still cause hallucinations if eaten.",
+        "spoils_in": 0
+    },{
+        "id": "garlic",
+        "copy-from": "garlic",
+        "type": "COMESTIBLE",
+		"name": "garlic bulb",
+		"description": "A pungent garlic bulb.  Popular as a seasoning for its strong flavor.  Can be disassembled to cloves.",
+        "spoils_in": 0
+    },{
+        "id": "garlic_clove",
+        "copy-from": "garlic_clove",
+        "type": "COMESTIBLE",
+		"name": "garlic clove",
+		"name_plural": "garlic cloves",
+		"description": "Cloves of garlic.  Useful as a seasoning, or for planting.",
+        "spoils_in": 0
+    },{
+        "id": "cornmeal",
+        "copy-from": "cornmeal",
+        "type": "COMESTIBLE",
+		"name": "cornmeal",
+		"description": "This yellow cornmeal is useful for baking.",
+        "spoils_in": 0
+    },{
+        "id": "dry_rice",
+        "copy-from": "dry_rice",
+        "type": "COMESTIBLE",
+		"name": "dried rice",
+		"name_plural": "dried rice",
+		"description": "Dehydrated long-grain rice.  Tasty and nutritious when cooked, virtually inedible when dry.",
+        "spoils_in": 0
+    },{
+        "id": "dry_veggy",
+        "copy-from": "dry_veggy",
+        "type": "COMESTIBLE",
+		"name": "dehydrated vegetable",
+		"description": "Dehydrated vegetable flakes.  With proper storage, this dried food will remain edible for an incredibly long time.",
+        "spoils_in": 0
+    },{
+        "id": "dried_salad",
+        "copy-from": "dried_salad",
+        "type": "COMESTIBLE",
+		"name": "dried salad",
+		"description": "Dried salad packed in a box with mayonnaise and ketchup.  Add water to enjoy.",
+        "spoils_in": 0
+    },{
+        "id": "dry_veggy_tainted",
+        "copy-from": "dry_veggy_tainted",
+        "type": "COMESTIBLE",
+		"name": "dehydrated tainted veggy",
+		"name_plural": "dehydrated tainted veggies",
+		"description": "Pieces of poisonous veggy that have been dried to prevent them from rotting away.  It will still poison you if you eat this.",
+        "spoils_in": 0
+    },{
+        "id": "spaghetti_raw",
+        "copy-from": "spaghetti_raw",
+        "type": "COMESTIBLE",
+		"name": "raw spaghetti",
+		"name_plural": "raw spaghetti",
+		"description": "It could be eaten raw if you're desperate, but is much better cooked.",
+        "spoils_in": 0
+    },{
+        "id": "lasagne_raw",
+        "copy-from": "lasagne_raw",
+        "type": "COMESTIBLE",
+		"name": "raw lasagne",
+		"description": "It could be eaten raw if you're desperate, but is much better cooked.",
+        "spoils_in": 0
+    },{
+        "id": "macaroni_raw",
+        "copy-from": "macaroni_raw",
+        "type": "COMESTIBLE",
+		"name": "raw macaroni",
+		"name_plural": "raw macaroni",
+		"description": "It could be eaten raw if you're desperate, but is much better cooked.",
+        "spoils_in": 0
+    },{
+        "id": "flour",
+        "copy-from": "flour",
+        "type": "COMESTIBLE",
+		"name": "flour",
+		"name_plural": "flour",
+		"description": "This enriched white flour is useful for baking.",
+        "spoils_in": 0
+    },{
+        "id": "oatmeal",
+        "copy-from": "oatmeal",
+        "type": "COMESTIBLE",
+		"name": "oatmeal",
+		"description": "Dry flakes of flattened grain.  Tasty and nutritious when cooked, it also doubles as food for horses while dry.",
+        "spoils_in": 0
+    },{
+        "id": "granola",
+        "copy-from": "granola",
+        "type": "COMESTIBLE",
+		"name": "granola",
+		"description": "A tasty and nutritious mixture of oats, honey, and other ingredients that has been baked until crisp.",
+        "spoils_in": 0
+    },{
+        "id": "noodles_fast",
+        "copy-from": "noodles_fast",
+        "type": "COMESTIBLE",
+		"name": "fast noodles",
+		"name_plural": "fast noodles",
+		"description": "So-called ramen noodles.  Can be eaten raw.",
+        "spoils_in": 0
+    }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "true_nonperish",
+    "name": "True Nonperishables",
+    "description": "Completely removes the spoilage times on some foods (preserved, dehydrated, etc.) that otherwise have very long spoilage times.",
+    "category": "rebalance",
+    "dependencies": [ "dda" ]
+  }
+]
