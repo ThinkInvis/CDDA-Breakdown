@@ -1,0 +1,11 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "BDArcaneMuts",
+    "name": "C:BD Arcane Mutations [WIP]",
+    "description": "Adds the Crystalline and Draconic mutation categories.  Work In Progress.",
+    "category": "core",
+    "dependencies": [ "dda" ],
+    "obsolete": false
+  }
+]
