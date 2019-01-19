@@ -198,6 +198,7 @@
         "points" : 0,
 		"visibility": 0,
 		"ugliness": 0,
+		"prereqs": ["BD_DRACARMOR1"],
         "description" : "Your scales have become slightly oily in appearance.  Your outsides seem to have caught up with your insides, and you now have complete immunity to high temperatures. [NYI]",
 		"category": ["MUTCAT_DRAGON"]
 	}
