@@ -332,6 +332,7 @@ class player : public Character
         /** Generates and handles the UI for player interaction with installed bionics */
         void power_bionics();
         void power_mutations();
+		void power_spattacks();
         /** Handles bionic activation effects of the entered bionic, returns if anything activated */
         bool activate_bionic( int b, bool eff_only = false );
         /** Handles bionic deactivation effects of the entered bionic, returns if anything deactivated */

@@ -779,6 +779,10 @@ class Character : public Creature, public visitable<Character>
          * contains the entry, the character has the mutation.
          */
         std::unordered_map<trait_id, trait_data> my_mutations;
+		/**
+		 * Same but with special attacks
+		 */
+		std::unordered_map<trait_id, trait_data> my_spattacks;
         /**
          * Contains mutation ids of the base traits.
          */

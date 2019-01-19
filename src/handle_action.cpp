@@ -1623,6 +1623,10 @@ bool game::handle_action()
                 u.power_mutations();
                 refresh_all();
                 break;
+			case ACTION_SPATTACKS:
+				u.power_spattacks();
+				refresh_all();
+				break;
 
             case ACTION_SORT_ARMOR:
                 u.sort_armor();

@@ -222,6 +222,8 @@ std::string action_ident( action_id act )
             return "bionics";
         case ACTION_MUTATIONS:
             return "mutations";
+		case ACTION_SPATTACKS:
+			return "spattacks";
         case ACTION_SORT_ARMOR:
             return "sort_armor";
         case ACTION_WAIT:
@@ -768,6 +770,7 @@ action_id handle_action_menu()
             REGISTER_ACTION( ACTION_SLEEP );
             REGISTER_ACTION( ACTION_BIONICS );
             REGISTER_ACTION( ACTION_MUTATIONS );
+			REGISTER_ACTION( ACTION_SPATTACKS );
             REGISTER_ACTION( ACTION_CONTROL_VEHICLE );
             REGISTER_ACTION( ACTION_ITEMACTION );
 #ifdef TILES
