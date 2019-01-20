@@ -177,7 +177,3 @@ Xcode/
 
 # gdb
 .gdb_history
-
-CataBreakdown.exe
-UpdateMaster.bat
-FixVCSoln.sh
