@@ -1,0 +1,39 @@
+[
+	{
+		"id": "hydroponics_empty",
+		"type": "TOOL",
+		"category": "tools",
+		"name": "hydroponics mini-chamber (empty)",
+		"description": "A small device set into a clay pot, designed to automatically nourish and protect a single plant.  You need to fill it with a seed, water, and fertilizer to get anything out.",
+		"weight": 6400,
+		"volume": 30,
+		"price": 50000,
+		"to_hit": -2,
+		"bashing": 8,
+		"material": [ "clay", "glass" ],
+		"symbol": "U",
+		"color": "dark_gray"
+	},
+	{
+		"id": "hydroponics_hops",
+		"copy_from": "hydroponics_empty",
+		"type": "TOOL",
+		"name": "hydroponics mini-chamber (hops, growing)",
+		"description": "A small device set into a clay pot, designed to automatically nourish and protect a single plant.  It's been filled with hop rhizomes and all the materials it needs to grow them.",
+		"use_action": {
+			"target": "hydroponics_hops_done",
+			"msg": "The hops within look to be ready to harvest.  You'll have to disassemble the chamber to get at them.",
+			"moves": 0,
+			"type": "delayed_transform",
+			"transform_age": 131040000,
+			"not_ready_msg": "The hops within are still growing.  It may take a while until they're ready to harvest..."
+		}
+	},
+	{
+		"id": "hydroponics_hops_done",
+		"copy_from": "hydroponics_hops",
+		"type": "TOOL",
+		"name": "hydroponics mini-chamber (hops, done)",
+		"description": "A small device set into a clay pot, designed to automatically nourish and protect a single plant.  It's full of mature hops, ready to harvest."
+	}
+]

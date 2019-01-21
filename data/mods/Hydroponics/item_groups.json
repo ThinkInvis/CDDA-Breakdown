@@ -1,0 +1,7 @@
+[
+  {
+    "id": "lab",
+    "type": "item_group",
+    "items": [ [ "hydroponics_empty", 1 ] ]
+  }
+]

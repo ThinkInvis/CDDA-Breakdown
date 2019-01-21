@@ -1,0 +1,54 @@
+[
+  {
+    "result": "hydroponics_empty",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_TOOLS",
+    "skill_used": "fabrication",
+    "difficulty": 6,
+	"skills_required": [ "electronics", 5 ],
+    "time": 40000,
+    "reversible": true,
+    "decomp_learn": 4,
+    "autolearn": true,
+    "using": [ [ "soldering_standard", 10 ] ],
+    "components": [ 
+		[ [ "clay_pot", 1 ] ],
+		[ [ "processor", 1 ] ],
+		[ [ "RAM", 1 ] ],
+		[ [ "scrap", 8 ] ],
+		[ [ "cable", 20 ] ],
+		[
+			[ "lightstrip_inactive", 1 ],
+			[ "flashlight", 1 ]
+		],
+		[ [ "power_supply", 1 ] ],
+		[ [ "amplifier", 1 ] ],
+		[ [ "solar_cell", 4 ] ]
+	]
+  },
+  {
+    "result": "hydroponics_hops",
+    "type": "recipe",
+	"category": "CC_OTHER",
+	"subcategory": "CSC_OTHER_TOOLS",
+    "skill_used": "fabrication",
+    "difficulty": 1,
+    "time": 1000,
+	"autolearn": true,
+    "components": [
+		[ [ "hydroponics_empty", 1 ] ],
+		[ [ "seed_hops", 1 ] ],
+		[ [ "water", 20 ], [ "water_clean", 20 ] ],
+		[ [ "fertilizer_liquid", 4 ], [ "fertilizer_commercial", 10 ] ]
+	]
+  }
+  {
+    "result": "hydroponics_hops_done",
+    "type": "uncraft",
+    "skill_used": "fabrication",
+    "difficulty": 1,
+    "time": 1000,
+    "components": [ [ [ "hops", 1 ] ], [ [ "hydroponics_empty", 1 ] ] ]
+  }
+]

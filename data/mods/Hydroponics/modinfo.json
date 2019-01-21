@@ -1,0 +1,12 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "Hydroponics",
+    "name": "Portable Hydroponics",
+    "authors": [ "ThinkInvisible" ],
+    "maintainers": [ "ThinkInvisible" ],
+    "description": "Adds items that allow growing farm plants on the go, if much slower.",
+    "category": "items",
+    "dependencies": [ "dda" ]
+  }
+]
