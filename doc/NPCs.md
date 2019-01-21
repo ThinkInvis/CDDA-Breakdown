@@ -378,14 +378,31 @@ The player will always have the option to return to a previous topic or end the 
 will otherwise have the option to give a $500, $50, or $5 bribe if they have the funds.  If they
 don't have at least $50, they will also have the option to provide some other bribe.
 
+### truefalsetext
+The player will have one response text if a condition is true, and another if it is false, but the same trial for either line.  `condition`, `true`, and `false` are all mandatory.
+
+```C++
+{
+    "truefalsetext": {
+        "condition": { "u_has_cash": 800 },
+        "true": "I may have the money, I'm not giving you any.",
+        "false": "I don't have that money."
+    },
+    "topic": "TALK_WONT_PAY"
+}
+```
+
 ### text
 Will be shown to the user, no further meaning.
 
 ### trial
-Optional, if not defined, "NONE" is used. Otherwise one of "NONE", "LIE", "PERSUADE" or "INTIMIDATE". If "NONE" is used, the `failure` object is not read, otherwise it's mandatory.
-The `difficulty` is only required if type is not "NONE" and specifies the success chance in percent (it is however modified by various things like mutations).
+Optional, if not defined, "NONE" is used. Otherwise one of "NONE", "LIE", "PERSUADE" "INTIMIDATE", or "CONDITION". If "NONE" is used, the `failure` object is not read, otherwise it's mandatory.
 
-An optional `mod` array takes any of the following modifiers and increases the difficulty by the NPC's opinion of your character or personality trait for that modifier multiplied by the value: "ANGER", "FEAR", "TRUST", "VALUE", "AGRESSION", "ALTRUISM", "BRAVERY", "COLLECTOR". The special "POS_FEAR" modifier treats NPC's fear of your character below 0 as though it were 0.
+The `difficulty` is only required if type is not "NONE" or "CONDITION" and specifies the success chance in percent (it is however modified by various things like mutations).  Higher difficulties are easier to pass.
+
+An optional `mod` array takes any of the following modifiers and increases the difficulty by the NPC's opinion of your character or personality trait for that modifier multiplied by the value: "ANGER", "FEAR", "TRUST", "VALUE", "AGRESSION", "ALTRUISM", "BRAVERY", "COLLECTOR". The special "POS_FEAR" modifier treats NPC's fear of your character below 0 as though it were 0.  The special "TOTAL" modifier sums all previous modifiers and then multiplies the result by its value and is used when setting the owed value.
+
+"CONDITION" trials take a mandatory `condition` instead of `difficulty`.  The `success` object is chosen if the `condition` is true and the `failure` is chosen otherwise.
 
 ### success and failure
 Both objects have the same structure. `topic` defines which topic the dialogue will switch to. `opinion` is optional, if given it defines how the opinion of the NPC will change. The given values are *added* to the opinion of the NPC, they are all optional and default to 0. `effect` is a function that is executed after choosing the response, see below.
@@ -404,6 +421,7 @@ The `failure` object is used if the trial fails, the `success` object is used ot
 ### Sample trials
 "trial": { "type": "PERSUADE", "difficulty": 0, "mod": [ [ "TRUST", 3 ], [ "VALUE", 3 ], [ "ANGER", -3 ] ] }
 "trial": { "type": "INTIMIDATE", "difficulty": 20, "mod": [ [ "FEAR", 8 ], [ "VALUE", 2 ], [ "TRUST", 2 ], [ "BRAVERY", -2 ] ] }
+"trial": { "type": "CONDITION", "condition": { "npc_has_trait": "FARMER" } }
 
 `topic` can also be a single topic object (the `type` member is not required here):
 ```C++
@@ -451,7 +469,7 @@ player_weapon_drop | Makes your character drop their weapon.
 
 Effect | Description
 ---|---
-u_add_effect: effect_string, (*optional* duration: duration_string)<br/>npc_add_effect: effect_string, (*optional* duration: duration_string) | Your character or the NPC will gain the effect for `duration_string` turns.
+u_add_effect: effect_string, (*one of* duration: duration_string, duration: duration_int)<br/>npc_add_effect: effect_string, (*one of* duration: duration_string, duration: duration_int) | Your character or the NPC will gain the effect for `duration_string` or `duration_int` turns.  If `duration_string` is "PERMANENT", the effect will be added permanently.
 u_add_trait: trait_string<br/>npc_add_trait: trait_string | Your character or the NPC will gain the trait.
 
 #### Trade / Items
@@ -506,6 +524,7 @@ deny_follow<br/>deny_lead<br/>deny_train<br/>deny_personal_info | Sets the appro
 { "topic": "TALK_EVAC_GUARD3_HOSTILE", "effect": [ { "u_faction_rep": -15 }, { "npc_change_faction": "hells_raiders" } ] }
 { "text": "Let's trade then.", "effect": "start_trade", "topic": "TALK_EVAC_MERCHANT" },
 { "text": "What needs to be done?", "topic": "TALK_CAMP_OVERSEER", "effect": { "companion_mission": "FACTION_CAMP" } }
+{ "text": "Do you like it?", "topic": "TALK_CAMP_OVERSEER", "effect": [ { "u_add_effect": "concerned", "duration": 600 }, { "npc_add_effect": "touched", "duration": "3600" }, { "u_add_effect": "empathetic", "duration": "PERMANENT" } ] }
 ```
 
 ---
@@ -650,7 +669,4 @@ Condition | Type | Description
     ]
   }
 }
-
-
-
 ```
