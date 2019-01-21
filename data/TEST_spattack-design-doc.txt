@@ -1,0 +1,22 @@
+JSON properties:
+	type, ID, name: standard requirements
+	restric_type: specifies how the restrictions list works
+		whitelist_and: ALL the specified restrictions must be PRESENT
+		whitelist_or: AT LEAST ONE of the specified restrictions must be PRESENT
+		whitelist_one: ONLY ONE of the specified restrictions must be PRESENT, all others must be ABSENT
+		blacklist_and: ALL the specified restrictions must be ABSENT
+		blacklist_or: AT LEAST ONE of the specified restrictions must be ABSENT
+		blacklist_one: ONLY ONE of the specified restrictions must be ABSENT, all others must be PRESENT
+	restrictions: list of conditions to check for, given the rule set by restric_type
+		e.g. specific held items, weapon categories, combat conditions such as 'player is moving'...
+	target: specifies how the attack is aimed
+		> range: how far away from the player can the targeting reticule be placed
+		> stage_angle: if 0, no effect. if greater than 0, a second firing stage is added, making the attack directed from the first targeting reticule to the second; stage_angle specifies how far from their facing direction the player can tilt the attack
+		> radius: how far away from the first targeting reticule can/will the attack extend
+		> shape: string flag for how the attack is shaped, e.g. "cone", "line", "point"...
+		> angle: modifier for some attack shapes, e.g. cone
+		> trigmsg: log message for when the attack is triggered
+	effect: specifies what the attack does; list
+		> affects: specifies what object types or objects this effect of the attack can target, e.g. "zombie", "ground", "furniture"...
+		> hard_trig: if present, indicates a hardcoded effect
+		> hitmsg: log message for when this effect is triggered

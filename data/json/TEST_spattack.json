@@ -1,0 +1,44 @@
+[
+	{
+        "type" : "spattack",
+        "id" : "FIRESP",
+        "name" : "Firebreath",
+		"restric_type" : "whitelist_and",
+		"restrictions" : [
+			"stamina:min:33"
+		],
+		"target" : {
+			"range" : 1,
+			"stage_angle" : 0,
+			"radius" : 3,
+			"shape" : "cone",
+			"angle" : 45,
+			"trigmsg" : [
+				"You exhale a wide cone of fire",
+				"<npcname> exhales a wide cone of fire"
+			]
+		},
+		"effect" : [
+			{
+				"affects": [
+					"user"
+				],
+				"stamina": -33
+			},
+			{
+				"affects": [
+					"ground"
+				],
+				"hard_trig": "ignitetile"
+			},
+			{
+				"affects": [
+					"npc"
+				],
+				"hard_trig": "ignitenpc",
+				"hitmsg" : "%s is engulfed!"
+			}
+		],
+        "description" : "Exhale a 3-meter, 45-degree cone of fire."
+	}
+]
