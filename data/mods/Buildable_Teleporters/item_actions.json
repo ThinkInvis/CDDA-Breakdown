@@ -1,7 +1,7 @@
 [
   {
     "type": "item_action",
-    "id": "btelstore",
+    "id": "BTELSTORE",
     "name": "Activate a teleporter beacon card"
   }
 ]
