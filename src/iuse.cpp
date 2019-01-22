@@ -5723,9 +5723,7 @@ int iuse::btelstore(player *p, item *it, bool t, const tripoint &pos)
     else if (!p->is_npc()) {
 
         enum {
-            ei_invalid, ei_reg, ei_dereg, ei_dowarp,
-            ei_oo, ei_or, ei_os, ei_oq, ei_ou,
-            ei_po, ei_pr, ei_ps, ei_pq, ei_pu
+            ei_invalid, ei_reg, ei_dereg, ei_dowarp
         };
 
         uilist amenu;
@@ -5734,7 +5732,6 @@ int iuse::btelstore(player *p, item *it, bool t, const tripoint &pos)
 
         const tripoint curr_ovm(g->u.global_omt_location());
         const tripoint curr_sm(g->u.global_sm_location());
-        const tripoint curr_sq(g->u.global_square_location());
         const tripoint curr_upos(g->u.pos());
 
         if (it->get_var("BEACON_STORED").empty()) {
@@ -5745,52 +5742,9 @@ int iuse::btelstore(player *p, item *it, bool t, const tripoint &pos)
             amenu.addentry(ei_dereg, true, 'r', _("Wipe stored position"));
         }
 
-        amenu.addentry(ei_oo, true, 'r', _("Overmap-->Overmap"));
-        amenu.addentry(ei_or, true, 'r', _("Overmap-->Omt>Om"));
-        amenu.addentry(ei_os, true, 'r', _("Overmap-->Submap"));
-        amenu.addentry(ei_oq, true, 'r', _("Overmap-->Square"));
-        amenu.addentry(ei_ou, true, 'r', _("Overmap-->Upos"));
-
-        amenu.addentry(ei_po, true, 'r', _("Upos-->Overmap"));
-        amenu.addentry(ei_pr, true, 'r', _("Upos-->Omt>Om"));
-        amenu.addentry(ei_ps, true, 'r', _("Upos-->Submap"));
-        amenu.addentry(ei_pq, true, 'r', _("Upos-->Square"));
-        amenu.addentry(ei_pu, true, 'r', _("Upos-->Upos"));
-
         amenu.query();
 
         const int choice = amenu.ret;
-        
-        if (ei_oo == choice) {
-            it->set_var("BEACON_OTARG", "O");
-        }
-        if (ei_or == choice) {
-            it->set_var("BEACON_OTARG", "R");
-        }
-        if (ei_os == choice) {
-            it->set_var("BEACON_OTARG", "S");
-        }
-        if (ei_oq == choice) {
-            it->set_var("BEACON_OTARG", "Q");
-        }
-        if (ei_ou == choice) {
-            it->set_var("BEACON_OTARG", "U");
-        }
-        if (ei_po == choice) {
-            it->set_var("BEACON_UTARG", "O");
-        }
-        if (ei_pr == choice) {
-            it->set_var("BEACON_UTARG", "R");
-        }
-        if (ei_ps == choice) {
-            it->set_var("BEACON_UTARG", "S");
-        }
-        if (ei_pq == choice) {
-            it->set_var("BEACON_UTARG", "Q");
-        }
-        if (ei_pu == choice) {
-            it->set_var("BEACON_UTARG", "U");
-        }
 
         if (ei_reg == choice) {
             it->active = true;
@@ -5803,10 +5757,6 @@ int iuse::btelstore(player *p, item *it, bool t, const tripoint &pos)
             it->set_var("BEACON_SX", curr_sm.x);
             it->set_var("BEACON_SY", curr_sm.y);
             it->set_var("BEACON_SZ", curr_sm.z);
-
-            it->set_var("BEACON_QX", curr_sq.x);
-            it->set_var("BEACON_QY", curr_sq.y);
-            it->set_var("BEACON_QZ", curr_sq.z);
 
             it->set_var("BEACON_UX", curr_upos.x);
             it->set_var("BEACON_UY", curr_upos.y);
@@ -5825,56 +5775,16 @@ int iuse::btelstore(player *p, item *it, bool t, const tripoint &pos)
         }
         if(ei_dowarp == choice) {
                 const tripoint where_ovm(it->get_var("BEACON_OX", 0), it->get_var("BEACON_OY", 0), it->get_var("BEACON_OZ", 0));
-                const tripoint where_ovmr(omt_to_om_copy(where_ovm));
                 const tripoint where_sm(it->get_var("BEACON_SX", 0), it->get_var("BEACON_SY", 0), it->get_var("BEACON_SZ", 0));
-                const tripoint where_sq(it->get_var("BEACON_QX", 0), it->get_var("BEACON_QY", 0), it->get_var("BEACON_QZ", 0));
                 const tripoint where_upos(it->get_var("BEACON_UX", 0), it->get_var("BEACON_UY", 0), it->get_var("BEACON_UZ", 0));
 
-                add_msg(_("DEBUG: stored overmap (%d,%d,%d)"), where_ovm.x, where_ovm.y, where_ovm.z);
-                add_msg(_("DEBUG: stored omt>om (%d,%d,%d)"), where_ovmr.x, where_ovmr.y, where_ovmr.z);
-                add_msg(_("DEBUG: stored submap (%d,%d,%d)"), where_sm.x, where_sm.y, where_sm.z);
-                add_msg(_("DEBUG: stored square (%d,%d,%d)"), where_sq.x, where_sq.y, where_sq.z);
-                add_msg(_("DEBUG: stored upos (%d,%d,%d)"), where_upos.x, where_upos.y, where_upos.z);
+                const tripoint where_upos_ovm(where_upos.x+((where_sm.x%2==1) ? SEEX : 0), where_upos.y + ((where_sm.y % 2 == 1) ? SEEY : 0), where_upos.z);
 
-                const tripoint curr_ovmr(omt_to_om_copy(curr_ovm));
-
-                add_msg(_("DEBUG: old overmap (%d,%d,%d)"), curr_ovm.x, curr_ovm.y, curr_ovm.z);
-                add_msg(_("DEBUG: old omt>om (%d,%d,%d)"), curr_ovmr.x, curr_ovmr.y, curr_ovmr.z);
-                add_msg(_("DEBUG: old submap (%d,%d,%d)"), curr_sm.x, curr_sm.y, curr_sm.z);
-                add_msg(_("DEBUG: old square (%d,%d,%d)"), curr_sq.x, curr_sq.y, curr_sq.z);
-                add_msg(_("DEBUG: old upos (%d,%d,%d)"), curr_upos.x, curr_upos.y, curr_upos.z);
-
-                std::string otarg = it->get_var("BEACON_OTARG", "O");
-                std::string utarg = it->get_var("BEACON_UTARG", "U");
-
-                g->place_player_overmap((otarg == "O") ? where_ovm : 
-                                       ((otarg == "R") ? where_ovmr : 
-                                       ((otarg == "S") ? where_sm : 
-                                       ((otarg == "Q") ? where_sq : 
-                                       ((otarg == "U") ? where_upos :
-                                       where_ovm
-                )))));
-                g->place_player((utarg == "O") ? where_ovm :
-                               ((utarg == "R") ? where_ovmr :
-                               ((utarg == "S") ? where_sm :
-                               ((utarg == "Q") ? where_sq :
-                               ((utarg == "U") ? where_upos :
-                               where_upos
-                )))));
-
-                const tripoint new_ovm(g->u.global_omt_location());
-                add_msg(_("DEBUG: new overmap (%d,%d,%d)"), new_ovm.x, new_ovm.y, new_ovm.z);
-                const tripoint new_ovmr(omt_to_om_copy(new_ovm));
-                add_msg(_("DEBUG: new omt>om (%d,%d,%d)"), new_ovmr.x, new_ovmr.y, new_ovmr.z);
-                const tripoint new_sm(g->u.global_sm_location());
-                add_msg(_("DEBUG: new submap (%d,%d,%d)"), new_sm.x, new_sm.y, new_sm.z);
-                const tripoint new_sq(g->u.global_square_location());
-                add_msg(_("DEBUG: new square (%d,%d,%d)"), new_sq.x, new_sq.y, new_sq.z);
-                const tripoint new_upos(g->u.pos());
-                add_msg(_("DEBUG: new upos (%d,%d,%d)"), new_upos.x, new_upos.y, new_upos.z);
-
+                g->place_player_overmap(where_ovm);
+                g->place_player(where_upos_ovm);
 
                 p->add_msg_if_player(m_info, _("With a great *schwoop*, your surroundings shift wildly!"));
+                p->add_msg_if_player(m_bad, _("You are greatly disoriented.")); //TODO: nausea trait, etc.?
                 p->moves -= 5000;
 
                 return it->type->charges_to_use(); //TODO: greater battery use for actually warping. should be moved to its own item later; will involve pulling the item vars from within vehicle/structure code
