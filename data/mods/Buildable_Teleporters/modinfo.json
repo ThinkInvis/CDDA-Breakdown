@@ -1,0 +1,12 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "build_port",
+    "name": "Buildable Teleporters",
+    "authors": [ "ThinkInvisible" ],
+    "maintainers": [ "ThinkInvisible" ],
+    "description": "Adds player-craftable teleport beacons and stations, for getting to known places fast in lategame.",
+    "category": "items",
+    "dependencies": [ "dda" ]
+  }
+]

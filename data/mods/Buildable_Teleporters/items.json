@@ -1,0 +1,18 @@
+[
+  {
+    "id": "btel_beacon",
+    "type": "TOOL",
+    "symbol": "#",
+    "color": "green",
+    "name": "teleporter beacon",
+    "description": "A small bundle of sensors and memory storage.  Can be used to store location data, for use at a teleport station.  [NYI, this can teleport instead]",
+    "price": 400000,
+    "material": ["plastic", "aluminum"],
+    "weight": 150,
+    "volume": 3,
+    "to_hit": 1,
+    "bashing": 5,
+    "revert_to": "btel_beacon",
+    "use_action": "BTELSTORE"
+  }
+]
