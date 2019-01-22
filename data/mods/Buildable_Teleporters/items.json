@@ -5,7 +5,7 @@
     "symbol": "#",
     "color": "green",
     "name": "teleporter beacon",
-    "description": "A small bundle of sensors and memory storage.  Can be used to store location data, for use at a teleport station.  [NYI, this can teleport instead]",
+    "description": "A small device that contains and stabilizes a single particle, which is quantum-entangled with another particle (hopefully in another beacon).  If you have the partner particle, you could theoretically use a larger machine to teleport from it to this one, or vice versa.  [NYI, this can teleport instead]",
     "price": 400000,
     "material": ["plastic", "aluminum"],
     "weight": 150,
