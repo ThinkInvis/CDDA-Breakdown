@@ -419,6 +419,8 @@ static const trait_id trait_WOOLALLERGY( "WOOLALLERGY" );
 static const trait_id trait_BD_EIDETIC( "BD_EIDETIC" );
 static const trait_id trait_BD_DIGITIGRADE( "BD_DIGITIGRADE" );
 static const trait_id trait_BD_QUADRIPEDAL( "BD_QUADRIPEDAL" );
+static const trait_id trait_BD_DRACFIRE("BD_DRACFIRE");
+static const trait_id trait_BD_DRACWELD("BD_DRACWELD");
 
 static const itype_id OPTICAL_CLOAK_ITEM_ID( "optical_cloak" );
 
