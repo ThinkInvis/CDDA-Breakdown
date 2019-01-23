@@ -14,7 +14,7 @@
 	  "using": [ [ "soldering_standard", 50 ] ],
 	  "qualities": [ { "id": "SCREW", "level": 1 }, { "id": "HAMMER", "level": 2 }, { "id": "SAW_M", "level": 2 } ],
 	  "components": [
-		[ [ "btel_quantcore", 4 ] ],
+		[ [ "btel_quantcore", 4 ], [ "portal", 1 ] ],
 		[ [ "power_supply", 4 ] ],
 		[ [ "amplifier", 5 ] ],
 		[ [ "antenna", 8 ] ],

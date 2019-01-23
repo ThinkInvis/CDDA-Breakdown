@@ -3,7 +3,8 @@
         "type": "item_group",
         "id": "rare",
         "items": [
-          ["btel_quantcore", 3]
+          ["btel_quantcore", 5],
+          ["btel_beacon", 1]
         ]
     },
     {
@@ -11,6 +12,13 @@
         "id": "electronics",
         "items": [
           ["btel_quantcore", 1]
+        ]
+    },
+    {
+        "type": "item_group",
+        "id": "science",
+        "items": [
+          ["btel_quantcore", 3]
         ]
     },
     {
