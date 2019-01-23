@@ -421,6 +421,10 @@ static const trait_id trait_BD_DIGITIGRADE( "BD_DIGITIGRADE" );
 static const trait_id trait_BD_QUADRIPEDAL( "BD_QUADRIPEDAL" );
 static const trait_id trait_BD_DRACFIRE("BD_DRACFIRE");
 static const trait_id trait_BD_DRACWELD("BD_DRACWELD");
+static const trait_id trait_BD_DRUID("BD_DRUID");
+static const trait_id trait_BD_SORC("BD_SORC");
+static const trait_id trait_BD_WIZ("BD_WIZ");
+static const trait_id trait_BD_WARLOCK("BD_WARLOCK");
 
 static const itype_id OPTICAL_CLOAK_ITEM_ID( "optical_cloak" );
 
@@ -475,6 +479,8 @@ player::player() : Character()
     power_level = 0;
     max_power_level = 0;
     stamina = 1000; //Temporary value for stamina. It will be reset later from external json option.
+    mana = 1000;
+    druid_next_mana = 10;
     stim = 0;
     pkill = 0;
     radiation = 0;
@@ -560,6 +566,7 @@ void player::normalize()
 
     temp_conv.fill( BODYTEMP_NORM );
     stamina = get_stamina_max();
+    mana = get_mana_max();
 }
 
 std::string player::disp_name( bool possessive ) const
@@ -2372,10 +2379,14 @@ void player::mod_stat( const std::string &stat, float modifier )
         mod_fatigue( modifier );
     } else if( stat == "oxygen" ) {
         oxygen += modifier;
-    } else if( stat == "stamina" ) {
+    } else if( stat == "stamina") {
         stamina += modifier;
-        stamina = std::min( stamina, get_stamina_max() );
-        stamina = std::max( 0, stamina );
+        stamina = std::min(stamina, get_stamina_max());
+        stamina = std::max(0, stamina);
+    } else if( stat == "mana") {
+        mana += modifier;
+        mana = std::min(mana, get_mana_max());
+        mana = std::max(0, mana);
     } else {
         // Fall through to the creature method.
         Character::mod_stat( stat, modifier );
@@ -3993,6 +4004,7 @@ void player::update_body()
 void player::update_body( const time_point &from, const time_point &to )
 {
     update_stamina( to_turns<int>( to - from ) );
+    update_mana( to_turns<int>( to - from ) );
     const int five_mins = ticks_between( from, to, 5_minutes );
     if( five_mins > 0 ) {
         check_needs_extremes();
@@ -4004,6 +4016,10 @@ void player::update_body( const time_point &from, const time_point &to )
 
     const int thirty_mins = ticks_between( from, to, 30_minutes );
     if( thirty_mins > 0 ) {
+        // The whims of nature shift...
+        int dnm_const = rand() % 100 - 25;
+        int dnm_exp = rand() % 7 - 2;
+        druid_next_mana = pow(dnm_const, -dnm_exp); //tend towards smaller values, but rarely allow a really big one
         // Radiation kills health even at low doses
         update_health( has_trait( trait_RADIOGENIC ) ? 0 : -radiation );
         get_sick();
@@ -4602,6 +4618,68 @@ void player::update_stamina( int turns )
 
     // Cap at max
     stamina = std::min( std::max( stamina, 0 ), max_stam );
+}
+
+void player::update_mana(int turns)
+{
+    float mana_recovery = 0.0f;
+
+    if (has_trait(trait_BD_DRUID)) {
+        //druids get free mana regen... at random, unpredictably, and usually low -- sometimes even negative
+        mana_recovery += druid_next_mana / 10;
+    }
+    else if (has_trait(trait_BD_SORC)) { //all of these should be mutex
+        //sorcerers consume bodily resources to regenerate mana
+        if (get_hunger() > -1000) {
+            //<-1000: too hungry
+            if (get_hunger() < -500) {
+                mana_recovery = 2.0f;
+            }
+            else if (get_hunger() < -100) {
+                mana_recovery = 5.0f;
+            }
+            else {
+                mana_recovery = 15.0f;
+            }
+        } 
+    }
+    else if (has_trait(trait_BD_WIZ)) {
+        //wizards need to think a lot (very tiring) to regenerate mana
+        if (get_fatigue() > -1000) {
+            //<-1000: too tired
+            if (get_fatigue() < -500) {
+                mana_recovery = 2.0f;
+            }
+            else if (get_fatigue() < -100) {
+                mana_recovery = 5.0f;
+            }
+            else {
+                mana_recovery = 15.0f;
+            }
+        }
+    }
+    else if (has_trait(trait_BD_WARLOCK)) {
+        //warlocks get constant, low-level regen
+        mana_recovery = 5.0f;
+    }
+    //are you an atronach? you don't get constant regen, so scram (and eat some magic items)
+
+    const int max_mana = get_mana_max();
+
+    mana = roll_remainder(mana + mana_recovery * turns);
+
+    int mana_surplus = std::min(max_mana - mana, 0);
+    int mana_used = mana - mana_surplus;
+
+    if (has_trait(trait_BD_SORC)) {
+        mod_hunger(-mana_used / 2);
+    }
+    else if (has_trait(trait_BD_WIZ)) {
+        mod_fatigue(-mana_used/2);
+    }
+
+    // Cap at max
+    mana = std::min(std::max(mana, 0), max_mana);
 }
 
 bool player::is_hibernating() const
@@ -11658,6 +11736,12 @@ int player::get_stamina_max() const
         return maxStamina * 1.4;
     }
     return maxStamina;
+}
+
+int player::get_mana_max() const
+{
+    int maxMana = get_option< int >("PLAYER_MAX_MANA");
+    return maxMana;
 }
 
 void player::burn_move_stamina( int moves )

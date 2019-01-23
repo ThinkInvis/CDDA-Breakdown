@@ -10,5 +10,6 @@ class window;
 
 void draw_HP( const player &p, const catacurses::window &w_HP );
 void print_stamina_bar( const player &p, const catacurses::window &w );
+void print_mana_bar(const player &p, const catacurses::window &w);
 int get_int_digits( const int &digits );
 #endif

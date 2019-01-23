@@ -198,12 +198,21 @@ void draw_HP( const player &p, const catacurses::window &w_HP )
         wmove( w_HP, 7 * dy, 0 );
         wprintz( w_HP, c_light_gray, _( "STA   " ) );
         print_stamina_bar( p, w_HP );
+
+        wmove(w_HP, 8 * dy, 0);
+        wprintz(w_HP, c_light_gray, _("MANA  "));
+        print_mana_bar(p, w_HP);
     }
     if( !wide ) {
         wmove( w_HP, 12, hpx );
         wprintz( w_HP, c_light_gray, _( "STA:" ) );
         wmove( w_HP, 13, hpx );
         print_stamina_bar( p, w_HP );
+
+        wmove(w_HP, 14, hpx);
+        wprintz(w_HP, c_light_gray, _("MANA"));
+        wmove(w_HP, 15, hpx);
+        print_mana_bar(p, w_HP);
     }
     wrefresh( w_HP );
 }
@@ -234,6 +243,14 @@ void print_stamina_bar( const player &p, const catacurses::window &w )
     nc_color sta_color;
     std::tie( sta_bar, sta_color ) = get_hp_bar( p.stamina, p.get_stamina_max() );
     wprintz( w, sta_color, sta_bar );
+}
+
+void print_mana_bar(const player &p, const catacurses::window &w)
+{
+    std::string mana_bar;
+    nc_color sta_color;
+    std::tie(mana_bar, sta_color) = get_hp_bar(p.mana, p.get_mana_max());
+    wprintz(w, sta_color, mana_bar);
 }
 
 int define_temp_level( const int lvl )

@@ -268,6 +268,7 @@ class player : public Character
         void regen( int rate_multiplier );
         /** Regenerates stamina */
         void update_stamina( int turns );
+        void update_mana( int turns );
         /** Kills the player if too hungry, stimmed up etc., forces tired player to sleep and prints warnings. */
         void check_needs_extremes();
 
@@ -1478,6 +1479,8 @@ class player : public Character
         int slow_rad;
         int oxygen;
         int stamina;
+        int mana;
+        int druid_next_mana;
         double recoil = MAX_RECOIL;
         std::weak_ptr<Creature> last_target;
         cata::optional<tripoint> last_target_pos;
@@ -1563,6 +1566,7 @@ class player : public Character
         int get_hp_max( hp_part bp ) const override;
         int get_hp_max() const override;
         int get_stamina_max() const;
+        int get_mana_max() const;
         void burn_move_stamina( int moves );
 
         //message related stuff
