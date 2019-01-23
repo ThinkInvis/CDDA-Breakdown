@@ -51,5 +51,50 @@
         "prereqs": ["GOODMEMORY"],
 		"category": ["ALPHA", "ELFA", "CEPHALOPOD", "CRYSTAL"],
 		"threshreq": ["THRESH_ALPHA", "THRESH_ELFA", "THRESH_CEPHALOPOD", "THRESH_CRYSTAL"]
+	},{
+        "type" : "mutation",
+        "id" : "BD_DRUID",
+        "name" : "Druid",
+        "points" : 3,
+		"visibility": 0,
+		"ugliness": 0,
+        "description" : "Your mana is linked to Mother Earth herself.  You regenerate mana over time at random, usually small, rates.",
+		"cancels": ["BD_SORC", "BD_WIZ", "BD_WARLOCK", "BD_ATRONACH"]
+	},{
+        "type" : "mutation",
+        "id" : "BD_SORC",
+        "name" : "Sorcerer",
+        "points" : 3,
+		"visibility": 0,
+		"ugliness": 0,
+        "description" : "You have an inner well of magical power, which lends itself well to instinctive spellcasting.  Your mana constantly regenerates by making you hungrier.",
+		"cancels": ["BD_DRUID", "BD_WIZ", "BD_WARLOCK", "BD_ATRONACH"]
+	},{
+        "type" : "mutation",
+        "id" : "BD_WIZ",
+        "name" : "Wizard",
+        "points" : 3,
+		"visibility": 0,
+		"ugliness": 0,
+        "description" : "You cast magic by asserting your will over the universe.  You regain mana by making constant, near-subconscious calculations that tire you out.",
+		"cancels": ["BD_DRUID", "BD_SORC", "BD_WARLOCK", "BD_ATRONACH"]
+	},{
+        "type" : "mutation",
+        "id" : "BD_WARLOCK",
+        "name" : "Warlock",
+        "points" : 3,
+		"visibility": 0,
+		"ugliness": 0,
+        "description" : "Your magic is granted to you by an otherworldly force.  Your mana regenerates at a slow, constant rate, at no cost to yourself.",
+		"cancels": ["BD_DRUID", "BD_SORC", "BD_WIZ", "BD_ATRONACH"]
+	},{
+        "type" : "mutation",
+        "id" : "BD_ATRONACH",
+        "name" : "Atronach",
+        "points" : 3,
+		"visibility": 0,
+		"ugliness": 0,
+        "description" : "While neither your body nor your mind is capable of generating its own mana, you can absorb mana from magic items and ley-lines with extreme efficiency.",
+		"cancels": ["BD_DRUID", "BD_SORC", "BD_WIZ", "BD_WARLOCK"]
 	}
 ]
