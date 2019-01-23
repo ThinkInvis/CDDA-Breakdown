@@ -1,0 +1,55 @@
+[
+	{
+        "type" : "mutation",
+        "id" : "BD_DIGITIGRADE",
+        "name" : "Digitigrade",
+        "points" : 5,
+		"visibility": 8,
+		"ugliness": 2,
+        "description" : "Your ankles and toes have stretched out, and your knees have an odd backwards bend to them.  After some practice, you find that this lets you move a lot faster and jump slightly higher, but severely hampers your balance. [NYI]",
+        "prereqs": ["FLEET2"],
+		"leads_to": ["BD_DIGITIJUMP", "BD_QUADRIPEDAL"],
+		"category": ["DRAGON", "BEAST", "LUPINE", "FELINE", "CATTLE", "BIRD", "LIZARD", "URSINE", "RAT", "RAPTOR", "CHIMERA"],
+		"restricts_gear": ["LEG_L", "LEG_R", "FOOT_L", "FOOT_R"],
+		"allow_soft_gear": false,
+		"attacks": {
+            "attack_text_u" : "You forcefully kick %s",
+            "attack_text_npc" : "%1$s forcefully kicks %2$s",
+            "chance" : 10,
+			"hardcoded_effect": true
+		}
+    },{
+        "type" : "mutation",
+        "id" : "BD_DIGITIJUMP",
+        "name" : "Leaper",
+        "points" : 5,
+		"visibility": 0,
+		"ugliness": 0,
+        "description" : "Your legs have further changed in shape, their muscles becoming almost awkwardly large.  A lot of your new speed is gone, and you even find it more difficult to walk; however, you can jump with incredible force and efficiency, and hopping is a suitable replacement for walking. [NYI]",
+        "prereqs": ["BD_DIGITIGRADE"],
+		"category": ["BEAST", "RAPTOR", "CHIMERA", "SPIDER", "BIRD"]
+    },{
+        "type" : "mutation",
+        "id" : "BD_QUADRIPEDAL",
+        "name" : "Quadripedal",
+        "points" : 5,
+		"visibility": 6,
+		"ugliness": 2,
+        "description" : "Your shoulders have reconfigured to catch up with your legs, and you find it easier to move on all fours.  Most clothing won't fit you without modification now, but you move with considerably increased balance and speed. [NYI]",
+        "prereqs": ["BD_DIGITIGRADE"],
+		"category": ["DRAGON", "BEAST", "LUPINE", "FELINE",  "RAT", "RAPTOR", "CHIMERA", "CATTLE", "URSINE", "LIZARD", "SPIDER"],
+		"threshreq": ["THRESH_DRAGON", "THRESH_BEAST", "THRESH_LUPINE", "THRESH_FELINE",  "THRESH_RAT", "THRESH_RAPTOR", "THRESH_CHIMERA", "THRESH_CATTLE", "THRESH_URSINE", "THRESH_LIZARD", "THRESH_SPIDER"],
+		"restricts_gear": ["ARM_L", "ARM_R", "HAND_L", "HAND_R", "TORSO"]
+	},{
+        "type" : "mutation",
+        "id" : "BD_EIDETIC",
+        "name" : "Eidetic Memory",
+        "points" : 8,
+		"visibility": 0,
+		"ugliness": 0,
+        "description" : "You remember everything. EVERYTHING. [NYI]",
+        "prereqs": ["GOODMEMORY"],
+		"category": ["ALPHA", "ELFA", "CEPHALOPOD", "CRYSTAL"],
+		"threshreq": ["THRESH_ALPHA", "THRESH_ELFA", "THRESH_CEPHALOPOD", "THRESH_CRYSTAL"]
+	}
+]
