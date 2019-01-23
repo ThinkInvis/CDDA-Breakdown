@@ -1047,6 +1047,13 @@ void options_manager::add_options_general()
 
     mOptionsSort["general"]++;
 
+    add("AUTO_PRY", "general", translate_marker("Auto-pry crates on examine"),
+        translate_marker("If disabled, examining a crate will ask you which tool to use (or to leave the crate alone).  Enable to always bypass this prompt and immediately use the best available prying tool."),
+        false
+    );
+
+    mOptionsSort["general"]++;
+
     add( "AUTO_FEATURES", "general", translate_marker( "Additional auto features" ),
          translate_marker( "If true, enables configured auto features below.  Disabled as long as any enemy monster is seen." ),
          false
