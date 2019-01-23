@@ -12,6 +12,10 @@
     "volume": 3,
     "to_hit": 1,
     "bashing": 5,
+    "max_charges": 500,
+    "initial_charges": 0,
+    "charges_per_use": 1,
+    "ammo": "battery",
     "revert_to": "btel_beacon",
     "use_action": "BTELSTORE",
 	"//": "TODO: see about adding a world-global registry for teleporter locations, in order to make them installable on e.g. vehicles"
