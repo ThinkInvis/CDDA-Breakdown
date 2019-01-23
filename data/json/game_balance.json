@@ -50,6 +50,13 @@
   },
   {
     "type": "EXTERNAL_OPTION",
+    "name": "PLAYER_MAX_MANA",
+    "info": "Sets max mana value of the player.",
+    "stype": "int",
+    "value": 1000
+  },
+  {
+    "type": "EXTERNAL_OPTION",
     "name": "PLAYER_HUNGER_RATE",
     "info": "Set base hunger rate per 5 minutes. Default: 1.0",
     "stype": "float",
