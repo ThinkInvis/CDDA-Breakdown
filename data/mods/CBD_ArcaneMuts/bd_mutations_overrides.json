@@ -1,0 +1,9 @@
+[
+	{
+		"type" : "mutation",
+		"copy_from": "THICK_SCALES",
+		"id" : "THICK_SCALES",
+		"name" : "Thick Scales",
+		"changes_to" : ["BD_DRACARMOR1"]
+	}
+]
