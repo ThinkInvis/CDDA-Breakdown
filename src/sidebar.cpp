@@ -199,9 +199,9 @@ void draw_HP( const player &p, const catacurses::window &w_HP )
         wprintz( w_HP, c_light_gray, _( "STA   " ) );
         print_stamina_bar( p, w_HP );
 
-        wmove(w_HP, 8 * dy, 0);
+        /*wmove(w_HP, 8 * dy, 0);
         wprintz(w_HP, c_light_gray, _("MANA  "));
-        print_mana_bar(p, w_HP);
+        print_mana_bar(p, w_HP);*/
     }
     if( !wide ) {
         wmove( w_HP, 12, hpx );
@@ -209,10 +209,10 @@ void draw_HP( const player &p, const catacurses::window &w_HP )
         wmove( w_HP, 13, hpx );
         print_stamina_bar( p, w_HP );
 
-        wmove(w_HP, 14, hpx);
+        /*wmove(w_HP, 14, hpx);
         wprintz(w_HP, c_light_gray, _("MANA"));
         wmove(w_HP, 15, hpx);
-        print_mana_bar(p, w_HP);
+        print_mana_bar(p, w_HP);*/
     }
     wrefresh( w_HP );
 }
