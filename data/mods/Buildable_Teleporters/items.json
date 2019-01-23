@@ -5,7 +5,7 @@
     "symbol": "#",
     "color": "green",
     "name": "teleporter beacon",
-    "description": "A small device that contains and stabilizes a single particle, which is quantum-entangled with another particle (hopefully in another beacon).  If you have the partner particle, you could theoretically use a larger machine to teleport from it to this one, or vice versa.  [NYI, this can teleport instead]",
+    "description": "A small bundle of sensors, memory storage, and quantum circuitry.  Using it once will capture location data; using it again will allow you to teleport to that location.  Keeping location data maintained will slowly consume electricity, and teleporting will require a LOT!",
     "price": 400000,
     "material": ["plastic", "aluminum"],
     "weight": 150,
@@ -13,6 +13,7 @@
     "to_hit": 1,
     "bashing": 5,
     "revert_to": "btel_beacon",
-    "use_action": "BTELSTORE"
+    "use_action": "BTELSTORE",
+	"//": "TODO: see about adding a world-global registry for teleporter locations, in order to make them installable on e.g. vehicles"
   }
 ]
