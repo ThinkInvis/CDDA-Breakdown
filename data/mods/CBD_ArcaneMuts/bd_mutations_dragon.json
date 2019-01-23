@@ -34,7 +34,7 @@
 		"ugliness": 2,
         "description" : "Your neck has become notably longer, and its muscles have become stronger to support the added length.  Other changes lower down result in an ability to force yourself to vomit with surprising force, and your stomach contents are now... fairly volatile.  You can also rotate your head MUCH farther now, not that it does much good. [NYI]",
 		"//": "kinda the same thing as spitter zombies, just with fire",
-		"prereqs": ["BC_DRACEAT"],
+		"prereqs": ["BD_DRACEAT"],
 		"category": ["DRAGON"]
 	},{
         "type" : "mutation",
@@ -44,28 +44,46 @@
 		"visibility": 1,
 		"ugliness": 1,
         "description" : "Your muzzle has further developed, becoming stronger and slightly more flexible.  Paired with circulation changes in your lungs, you find that you can exhale fire continuously while breathing.  Your muzzle allows you to control the angle and intensity of the fire enough that you can weld with it. [NYI]",
-		"prereqs": ["BC_DRACFIRE", "MUZZLE_LONG"],
+		"prereqs": ["BD_DRACFIRE", "MUZZLE_LONG"],
 		"category": ["DRAGON"]
 	},{
         "type" : "mutation",
         "id" : "BD_DRACARMOR1",
         "name" : "Plated Scales",
-        "points" : 2,
-		"visibility": 3,
-		"ugliness": 1,
-        "description" : "Your scales have further thickened in most places, taking on a metallic sheen.  They've also moved around a lot, and your dexterity hasn't been affected much. [NYI]",
+        "points" : 4,
+		"visibility": 12,
+		"ugliness": 6,
+        "mixed_effect" : true,
+        "types" : ["SKIN"],
+        "description" : "Your scales have further thickened in most places, taking on a metallic sheen.  They've also moved around a lot, and your dexterity hasn't been affected much.  You also seem to be developing a strong dislike for water.",
+        "wet_protection" : [
+            { "part" : "HEAD", "ignored" : -2 },
+            { "part" : "LEG_L", "ignored" : -8 },
+            { "part" : "LEG_R", "ignored" : -8 },
+            { "part" : "FOOT_L", "ignored" : -3 },
+            { "part" : "FOOT_R", "ignored" : -3 },
+            { "part" : "ARM_L", "ignored" : -8 },
+            { "part" : "ARM_R", "ignored" : -8 },
+            { "part" : "HAND_L", "ignored" : -3 },
+            { "part" : "HAND_R", "ignored" : -3 },
+            { "part" : "TORSO", "ignored" : -18 }
+        ],
 		"prereqs": ["THICK_SCALES"],
 		"//": "TODO: make sure this cancels out THICK_SCALES, will want to add new armor values. may need an override?",
+        "armor" : [ { "parts" : "ALL", "cut" : 8, "bash" : 2 } ],
+        "bodytemp_modifiers" : [-200, 600],
 		"category": ["DRAGON"]
 	},{
         "type" : "mutation",
         "id" : "BD_DRACARMOR2",
         "name" : "Tempered Scales",
-        "points" : 0,
-		"visibility": 0,
+        "points" : 4,
+		"visibility": 1,
 		"ugliness": 0,
+        "types" : ["SKIN"],
 		"prereqs": ["BD_DRACARMOR1"],
-        "description" : "Your scales have become slightly oily in appearance.  Your outsides seem to have caught up with your insides, and you now have complete immunity to high temperatures. [NYI]",
+        "bodytemp_modifiers" : [-400000, 400000],
+        "description" : "Your scales have become slightly oily in appearance.  Your outsides seem to have caught up with your insides, and you now have complete immunity to extreme temperatures.",
 		"category": ["DRAGON"]
 	}
 ]
