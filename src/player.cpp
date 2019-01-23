@@ -419,8 +419,6 @@ static const trait_id trait_WOOLALLERGY( "WOOLALLERGY" );
 static const trait_id trait_BD_EIDETIC( "BD_EIDETIC" );
 static const trait_id trait_BD_DIGITIGRADE( "BD_DIGITIGRADE" );
 static const trait_id trait_BD_QUADRIPEDAL( "BD_QUADRIPEDAL" );
-static const trait_id trait_BD_DRACFIRE("BD_DRACFIRE");
-static const trait_id trait_BD_DRACWELD("BD_DRACWELD");
 
 static const itype_id OPTICAL_CLOAK_ITEM_ID( "optical_cloak" );
 
@@ -6995,9 +6993,7 @@ bool player::has_fire(const int quantity) const
         return true;
     } else if (has_bionic( bio_lighter ) && power_level > quantity * 5 ) {
         return true;
-    } else if (has_bionic(bio_laser) && power_level > quantity * 5) {
-        return true;
-    } else if (has_trait(trait_BD_DRACFIRE)) {
+    } else if (has_bionic( bio_laser ) && power_level > quantity * 5 ) {
         return true;
     } else if( is_npc() ) {
         // A hack to make NPCs use their Molotovs
@@ -7015,73 +7011,27 @@ void player::use_fire(const int quantity)
 // (home made, military), hotplate, welder in that order.
 // bio_lighter, bio_laser, bio_tools, has_active_bionic("bio_tools"
 
-    uilist selection_menu;
-    selection_menu.text = string_format(_("What source of fire to use?"));
-
-    enum fire_tlist {
-        ft_inworld, ft_starter,
-        ft_biotools, ft_biolight, ft_biolas,
-        ft_mut_fb
-    };
-
-    int i = 0;
-    std::vector<fire_tlist> fire_types;
-
-    selection_menu.addentry(i++, true, MENU_AUTOASSIGN, _("Never mind"));
-    if( g->m.has_nearby_fire( pos() ) || has_item_with_flag( "FIRE" )) {
-        selection_menu.addentry(i++, true, MENU_AUTOASSIGN, string_format(_("Nearby and/or held fire")));
-        fire_types.push_back(ft_inworld);
-    }
-    if( has_item_with_flag( "FIRESTARTER" ) ) {
+    if( g->m.has_nearby_fire( pos() ) ) {
+        return;
+    } else if( has_item_with_flag( "FIRE" ) ) {
+        return;
+    } else if( has_item_with_flag( "FIRESTARTER" ) ) {
         auto firestarters = all_items_with_flag( "FIRESTARTER" );
-        for( auto &j : firestarters ) {
-            if( has_charges( j->typeId(), quantity ) ) {
-                selection_menu.addentry(i++, true, MENU_AUTOASSIGN, string_format(_("Fire-starting item")));
-                fire_types.push_back(ft_starter);
-                break;
+        for( auto &i : firestarters ) {
+            if( has_charges( i->typeId(), quantity ) ) {
+                use_charges( i->typeId(), quantity );
+                return;
             }
         }
-    }
-    if (has_active_bionic( bio_tools ) && power_level > quantity * 5 ) {
-        selection_menu.addentry(i++, true, MENU_AUTOASSIGN, string_format(_("Integrated Toolset [%d bionic power]"), -quantity*5));
-        fire_types.push_back(ft_biotools);
-    } 
-    if (has_bionic( bio_lighter ) && power_level > quantity * 5 ) {
-        selection_menu.addentry(i++, true, MENU_AUTOASSIGN, string_format(_("Mini-Flamethrower [%d bionic power]"), -quantity * 5));
-        fire_types.push_back(ft_biolight);
-    } 
-    if (has_bionic( bio_laser ) && power_level > quantity * 5 ) {
-        selection_menu.addentry(i++, true, MENU_AUTOASSIGN, string_format(_("Finger-Mounted Laser [%d bionic power]"), -quantity * 5));
-        fire_types.push_back(ft_biolas);
-    }
-    /*if (has_trait(trait_BD_DRACFIRE) && power_level > quantity * 5) {
-        selection_menu.addentry(i++, true, MENU_AUTOASSIGN, string_format(_("Fire Breath [%d bionic power]"), -quantity * 5));
-        fire_types.push_back(ft_biolas);
-        //charge_power( -quantity * 5 );
-        //return;
-    }*/ //NYI, add the Mana stat first
-
-    selection_menu.query();
-    auto index = selection_menu.ret;
-
-    if (!(index == 0 || index == UILIST_CANCEL)) {
-        fire_tlist chosen_ftype = fire_types[index];
-        if (ft_inworld == chosen_ftype) {
-            return;
-        }
-        else if (ft_starter == chosen_ftype) {
-            auto firestarters = all_items_with_flag("FIRESTARTER");
-            for (auto &i : firestarters) {
-                if (has_charges(i->typeId(), quantity)) {
-                    use_charges(i->typeId(), quantity);
-                    return;
-                }
-            }
-        }
-        else if (ft_biolas == chosen_ftype || ft_biolight == chosen_ftype || ft_biotools == chosen_ftype) {
-            charge_power( -quantity * 5 );
-            return;
-        }
+    } else if (has_active_bionic( bio_tools ) && power_level > quantity * 5 ) {
+        charge_power( -quantity * 5 );
+        return;
+    } else if (has_bionic( bio_lighter ) && power_level > quantity * 5 ) {
+        charge_power( -quantity * 5 );
+        return;
+    } else if (has_bionic( bio_laser ) && power_level > quantity * 5 ) {
+        charge_power( -quantity * 5 );
+        return;
     }
 }
 
