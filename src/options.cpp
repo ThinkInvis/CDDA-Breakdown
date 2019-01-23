@@ -1764,6 +1764,11 @@ void options_manager::add_options_world_default()
          0, 1000, 100
        );
 
+    add("VEHSTRUC_SCALING", "world_default", translate_marker("Vehicle scaling"),
+        translate_marker("Sets the time of vehicle construction (install, remove, repair) in percents.  '50' is two times faster than default, '200' is two times longer."),
+        1, 1000, 100
+    );
+
     add("SPOIL_SCALING", "world_default", translate_marker("Spoilage scaling"),
         translate_marker("Sets how fast perishables spoil in percents.  '50' is two times slower than default, '200' is two times faster.  Warning: this is not reflected by ingame descriptions of spoil times."),
         0, 1000, 100
