@@ -5702,6 +5702,107 @@ static std::string photo_quality_name( const int index )
     return _( names[index].c_str() );
 }
 
+int iuse::btelstore(player *p, item *it, bool t, const tripoint &pos)
+{
+    if (t) {
+
+        if (!it->get_var("BEACON_STORED").empty() && (it->ammo_remaining() > 0)) {
+            if (calendar::once_every(10_minutes)) {
+                it->ammo_consume(1, p->pos()); //slow, but not negligible, upkeep required
+            }
+        }
+        else {
+            it->active = false;
+            if (it->get_var("BEACON_STORED").empty()) {
+                p->add_msg_if_player(m_info, _("Beacon's batteries are dead.  Also, it looks considerably bugged.  Whoops.")); //shouldn't be able to run out of active-mode charge with no stored var
+            }
+            else {
+                p->add_msg_if_player(m_info, _("Beacon's batteries are dead.  Location data lost!"));
+                it->erase_var("BEACON_STORED");
+            }
+        }
+
+        return 0;
+
+    }
+    else if (!p->is_npc()) {
+
+        enum {
+            ei_invalid, ei_reg, ei_dereg, ei_dowarp
+        };
+
+        uilist amenu;
+
+        amenu.text = _("[Teleporter Beacon]");
+
+        const tripoint curr_ovm(g->u.global_omt_location());
+        const tripoint curr_sm(g->u.global_sm_location());
+        const tripoint curr_upos(g->u.pos());
+
+        if (it->get_var("BEACON_STORED").empty()) {
+            amenu.addentry(ei_reg, true, 'r', _("Register current position"));
+        }
+        else {
+            if(it->ammo_remaining() >= 400) {
+                amenu.addentry(ei_dowarp, true, 'r', _("Teleport to stored position"));
+            }
+            else {
+                amenu.addentry(ei_invalid, true, 'r', _("Teleport to stored position [Insufficient charge! Need 400]"));
+            }
+            amenu.addentry(ei_dereg, true, 'r', _("Wipe stored position"));
+        }
+
+        amenu.query();
+
+        const int choice = amenu.ret;
+
+        if (ei_reg == choice) {
+            it->active = true;
+            it->set_var("BEACON_STORED", true);
+
+            it->set_var("BEACON_OX", curr_ovm.x);
+            it->set_var("BEACON_OY", curr_ovm.y);
+            it->set_var("BEACON_OZ", curr_ovm.z);
+
+            it->set_var("BEACON_SX", curr_sm.x);
+            it->set_var("BEACON_SY", curr_sm.y);
+            it->set_var("BEACON_SZ", curr_sm.z);
+
+            it->set_var("BEACON_UX", curr_upos.x);
+            it->set_var("BEACON_UY", curr_upos.y);
+            it->set_var("BEACON_UZ", curr_upos.z);
+
+            p->moves -= 30;
+            return it->type->charges_to_use();
+        }
+
+        if (ei_dereg == choice) {
+            it->active = false;
+            it->erase_var("BEACON_STORED");
+
+            p->moves -= 30;
+            return it->type->charges_to_use();
+        }
+        if(ei_dowarp == choice) {
+                const tripoint where_ovm(it->get_var("BEACON_OX", 0), it->get_var("BEACON_OY", 0), it->get_var("BEACON_OZ", 0));
+                const tripoint where_sm(it->get_var("BEACON_SX", 0), it->get_var("BEACON_SY", 0), it->get_var("BEACON_SZ", 0));
+                const tripoint where_upos(it->get_var("BEACON_UX", 0), it->get_var("BEACON_UY", 0), it->get_var("BEACON_UZ", 0));
+
+                const tripoint where_upos_ovm(where_upos.x+((where_sm.x%2==1) ? SEEX : 0), where_upos.y + ((where_sm.y % 2 == 1) ? SEEY : 0), where_upos.z);
+
+                g->place_player_overmap(where_ovm);
+                g->place_player(where_upos_ovm);
+
+                p->add_msg_if_player(m_info, _("With a great *schwoop*, your surroundings shift wildly!"));
+                p->add_msg_if_player(m_bad, _("You are extremely disoriented.")); //TODO: nausea trait, etc.?
+                p->moves -= 5000;
+
+                return 400;
+        }
+    }
+    return 0;
+}
+
 int iuse::einktabletpc( player *p, item *it, bool t, const tripoint &pos )
 {
     if( t ) {

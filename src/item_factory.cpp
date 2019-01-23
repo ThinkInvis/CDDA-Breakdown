@@ -619,6 +619,7 @@ void Item_factory::init()
     add_iuse( "DOLLCHAT", &iuse::talking_doll );
     add_iuse( "ECIG", &iuse::ecig );
     add_iuse( "EHANDCUFFS", &iuse::ehandcuffs );
+    add_iuse( "BTELSTORE", &iuse::btelstore);
     add_iuse( "EINKTABLETPC", &iuse::einktabletpc );
     add_iuse( "ELEC_CHAINSAW_OFF", &iuse::elec_chainsaw_off );
     add_iuse( "ELEC_CHAINSAW_ON", &iuse::elec_chainsaw_on );

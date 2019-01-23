@@ -1,0 +1,57 @@
+[
+	{
+	  "type" : "recipe",
+	  "result": "btel_beacon",
+	  "category": "CC_ELECTRONIC",
+	  "subcategory": "CSC_ELECTRONIC_OTHER",
+	  "skill_used": "electronics",
+	  "skills_required": [ [ "fabrication", 5 ] ],
+	  "difficulty": 10,
+	  "time": 60000,
+	  "decomp_learn": 5,
+	  "autolearn": true,
+	  "book_learn": [ [ "recipe_lab_elec", 7 ], [ "advanced_electronics", 8 ] ],
+	  "using": [ [ "soldering_standard", 50 ] ],
+	  "qualities": [ { "id": "SCREW", "level": 1 }, { "id": "HAMMER", "level": 2 }, { "id": "SAW_M", "level": 2 } ],
+	  "components": [
+		[ [ "btel_quantcore", 4 ], [ "portal", 1 ] ],
+		[ [ "power_supply", 4 ] ],
+		[ [ "amplifier", 5 ] ],
+		[ [ "antenna", 8 ] ],
+		[ [ "cable", 50 ] ],
+		[ [ "scrap", 8 ] ],
+		[ [ "sheet_metal_small", 16 ] ],
+		[ [ "plastic_chunk", 12 ] ],
+		[ [ "processor", 4 ] ],
+		[ [ "RAM", 2 ] ],
+		[ [ "small_lcd_screen", 1 ] ]
+	  ]
+	},
+	{
+	  "type" : "recipe",
+	  "result": "teleporter",
+	  "category": "CC_ELECTRONIC",
+	  "subcategory": "CSC_ELECTRONIC_OTHER",
+	  "skill_used": "electronics",
+	  "skills_required": [ [ "fabrication", 4 ] ],
+	  "difficulty": 8,
+	  "time": 10000,
+	  "decomp_learn": 5,
+	  "autolearn": true,
+	  "reversible": true,
+	  "book_learn": [ [ "recipe_lab_elec", 7 ], [ "advanced_electronics", 8 ] ],
+	  "using": [ [ "soldering_standard", 20 ] ],
+	  "qualities": [ { "id": "SCREW", "level": 2 } ],
+	  "components": [
+		[ [ "power_supply", 2 ] ],
+		[ [ "amplifier", 1 ] ],
+		[ [ "btel_quantcore", 1 ] ],
+		[ [ "cable", 20 ] ],
+		[ [ "scrap", 4 ] ],
+		[ [ "plastic_chunk", 6 ] ],
+		[ [ "processor", 2 ] ],
+		[ [ "RAM", 1 ] ],
+		[ [ "small_lcd_screen", 1 ] ]
+	  ]
+	}
+]

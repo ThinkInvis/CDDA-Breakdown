@@ -177,6 +177,7 @@ class iuse
         int pack_item( player *, item *, bool, const tripoint & );
         int radglove( player *, item *, bool, const tripoint & );
         int robotcontrol( player *, item *, bool, const tripoint & );
+        int btelstore(player *, item *, bool, const tripoint &);
         int einktabletpc( player *, item *, bool, const tripoint & );
         int camera( player *, item *, bool, const tripoint & );
         int ehandcuffs( player *, item *, bool, const tripoint & );

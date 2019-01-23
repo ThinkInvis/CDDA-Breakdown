@@ -1,0 +1,35 @@
+[
+  {
+    "id": "btel_beacon",
+    "type": "TOOL",
+    "symbol": "#",
+    "color": "green",
+    "name": "teleporter beacon",
+    "description": "A bundle of sensors, memory storage, and quantum circuitry.  Using it once will capture location data; using it again will allow you to teleport to that location.  Keeping location data maintained will slowly consume electricity, and teleporting will require a LOT!",
+    "price": 400000,
+    "material": ["plastic", "steel"],
+    "weight": 4000,
+    "volume": 10,
+    "to_hit": 1,
+    "bashing": 5,
+    "max_charges": 500,
+    "initial_charges": 0,
+    "charges_per_use": 1,
+    "ammo": "battery",
+    "revert_to": "btel_beacon",
+    "use_action": "BTELSTORE",
+	"//": "TODO: see about adding a world-global registry for teleporter locations, in order to make them installable on e.g. vehicles"
+  },
+  {
+    "id": "btel_quantcore",
+	"copy_from": "processor",
+    "type": "GENERIC",
+	"symbol": ";",
+    "color": "white",
+    "name": "quantum processor",
+    "description": "A special, purpose-built circuit board: it calculates how to fold the universe up without breaking things.  In other words, it figures out how to teleport.",
+	"weight": 80,
+	"volume": 2,
+    "price": 160000
+  }
+]

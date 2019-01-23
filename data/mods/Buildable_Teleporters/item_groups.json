@@ -1,0 +1,32 @@
+[
+    {
+        "type": "item_group",
+        "id": "rare",
+        "items": [
+          ["btel_quantcore", 5],
+          ["btel_beacon", 1]
+        ]
+    },
+    {
+        "type": "item_group",
+        "id": "electronics",
+        "items": [
+          ["btel_quantcore", 1]
+        ]
+    },
+    {
+        "type": "item_group",
+        "id": "science",
+        "items": [
+          ["btel_quantcore", 3]
+        ]
+    },
+    {
+        "type": "item_group",
+        "id": "teleport",
+        "items": [
+          ["btel_quantcore", 45],
+          ["btel_beacon", 5]
+        ]
+    }
+]
