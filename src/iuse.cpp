@@ -5706,18 +5706,23 @@ int iuse::btelstore(player *p, item *it, bool t, const tripoint &pos)
 {
     if (t) {
 
-        /*if (!it->get_var("BEACON_STORED").empty() && (it->ammo_remaining() > 0)) {
-            if (calendar::once_every(60_minutes)) {
-                it->ammo_consume(1, p->pos());
+        if (!it->get_var("BEACON_STORED").empty() && (it->ammo_remaining() > 0)) {
+            if (calendar::once_every(10_minutes)) {
+                it->ammo_consume(1, p->pos()); //slow, but not negligible, upkeep required
             }
         }
         else {
             it->active = false;
-            it->erase_var("BEACON_STORED");
-            p->add_msg_if_player(m_info, _("Beacon's batteries are dead."));
+            if (it->get_var("BEACON_STORED").empty()) {
+                p->add_msg_if_player(m_info, _("Beacon's batteries are dead.  Also, it looks considerably bugged.  Whoops.")); //shouldn't be able to run out of active-mode charge with no stored var
+            }
+            else {
+                p->add_msg_if_player(m_info, _("Beacon's batteries are dead.  Location data lost!"));
+                it->erase_var("BEACON_STORED");
+            }
         }
 
-        return 0;*/
+        return 0;
 
     }
     else if (!p->is_npc()) {
@@ -5738,7 +5743,12 @@ int iuse::btelstore(player *p, item *it, bool t, const tripoint &pos)
             amenu.addentry(ei_reg, true, 'r', _("Register current position"));
         }
         else {
-            amenu.addentry(ei_dowarp, true, 'r', _("Teleport to stored position"));
+            if(it->ammo_remaining() >= 400) {
+                amenu.addentry(ei_dowarp, true, 'r', _("Teleport to stored position"));
+            }
+            else {
+                amenu.addentry(ei_invalid, true, 'r', _("Teleport to stored position [Insufficient charge! Need 400]"));
+            }
             amenu.addentry(ei_dereg, true, 'r', _("Wipe stored position"));
         }
 
@@ -5784,10 +5794,10 @@ int iuse::btelstore(player *p, item *it, bool t, const tripoint &pos)
                 g->place_player(where_upos_ovm);
 
                 p->add_msg_if_player(m_info, _("With a great *schwoop*, your surroundings shift wildly!"));
-                p->add_msg_if_player(m_bad, _("You are greatly disoriented.")); //TODO: nausea trait, etc.?
+                p->add_msg_if_player(m_bad, _("You are extremely disoriented.")); //TODO: nausea trait, etc.?
                 p->moves -= 5000;
 
-                return it->type->charges_to_use(); //TODO: greater battery use for actually warping. should be moved to its own item later; will involve pulling the item vars from within vehicle/structure code
+                return 400;
         }
     }
     return 0;
