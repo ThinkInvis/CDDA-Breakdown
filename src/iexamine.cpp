@@ -772,11 +772,11 @@ void iexamine::crate( player &p, const tripoint &examp )
 
     iuse dummy;
 
-    if( prying_items.size() == 1 ) {
+    /*if( prying_items.size() == 1 ) {
         item temporary_item( prying_items[0]->type );
         // They only had one item anyway, so just use it.
         dummy.crowbar( &p, &temporary_item, false, examp );
-    }
+    }*/
 
     // Sort by their quality level.
     std::sort( prying_items.begin(), prying_items.end(), []( const item * a, const item * b ) -> bool {
