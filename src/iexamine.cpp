@@ -762,10 +762,6 @@ void iexamine::crate( player &p, const tripoint &examp )
         return;
     }
 
-    uilist selection_menu;
-    selection_menu.text = string_format( _( "The %s is closed tightly." ),
-                                           g->m.furnname( examp ) );
-
     auto prying_items = p.crafting_inventory().items_with( []( const item & it ) -> bool {
         return it.has_quality( quality_id( "PRY" ), 1 );
     } );
@@ -788,8 +784,13 @@ void iexamine::crate( player &p, const tripoint &examp )
         auto selected_tool = prying_items[0];
         item temporary_item(selected_tool->type);
         dummy.crowbar(&p, &temporary_item, false, examp);
-    } else { // original prying-tool list behavior
-        // Then display the items
+    } else {
+        // original prying-tool list behavior
+        // Prepare and display menu for choice of tool (or none)
+        uilist selection_menu;
+        selection_menu.text = string_format(_("The %s is closed tightly."),
+            g->m.furnname(examp));
+
         int i = 0;
         selection_menu.addentry( i++, true, MENU_AUTOASSIGN, _( "Leave it alone" ) );
         for( auto iter : prying_items ) {
