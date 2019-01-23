@@ -1049,6 +1049,12 @@ void options_manager::add_options_general()
 
     add("AUTO_PRY", "general", translate_marker("Auto-pry crates on examine"),
         translate_marker("If disabled, examining a crate will ask you which tool to use (or to leave the crate alone).  Enable to always bypass this prompt and immediately use the best available prying tool."),
+        true
+    );
+
+    // separate option because locks can be far more dangerous than crates to pry open. todo: does examine try picking first, or just jump straight to prying? former is more ideal
+    add("AUTO_PRY_LOCKED", "general", translate_marker("Auto-pry locks on examine"),
+        translate_marker("If disabled, examining a non-crate locked object will ask you which tool to use (or to leave the crate alone).  Enable to always bypass this prompt and immediately use the best available prying tool."),
         false
     );
 

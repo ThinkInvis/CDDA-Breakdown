@@ -1176,45 +1176,47 @@ void iexamine::locked_object( player &p, const tripoint &examp )
         return;
     }
 
-    uilist selection_menu;
-
-    selection_menu.text = string_format( _( "The %s is locked..." ), g->m.tername( examp ) );
-
     auto prying_items = p.crafting_inventory().items_with( []( const item & it ) -> bool {
         return it.has_quality( quality_id( "PRY" ), 2 );
     } );
 
     iuse dummy;
-    if( prying_items.size() == 1 ) {
-        item temporary_item( prying_items[0]->type );
-        // They only had one item anyway, so just use it.
-        dummy.crowbar( &p, &temporary_item, false, examp );
-        return;
-    }
 
     // Sort by their quality level.
     std::sort( prying_items.begin(), prying_items.end(), []( const item * a, const item * b ) -> int {
         return a->get_quality( quality_id( "PRY" ) ) > b->get_quality( quality_id( "PRY" ) );
     } );
 
-    // Then display the items
-    int i = 0;
-    selection_menu.addentry( i++, true, MENU_AUTOASSIGN, _( "Leave it alone" ) );
-    for( auto iter : prying_items ) {
-        selection_menu.addentry( i++, true, MENU_AUTOASSIGN, string_format( _( "Use the %s" ),
-                                 iter->tname() ) );
+    if (get_option<bool>("AUTO_PRY_LOCKED")) {
+        // user has elected to never have an 'are you sure' prompt to pop open non-crate pryables while examining, just use the best prying tool available
+        auto selected_tool = prying_items[0];
+        item temporary_item(selected_tool->type);
+        dummy.crowbar(&p, &temporary_item, false, examp);
+    } else {
+        // original prying-tool list behavior
+        // Prepare and display menu for choice of tool (or none)
+        uilist selection_menu;
+
+        selection_menu.text = string_format(_("The %s is locked..."), g->m.tername(examp));
+
+        int i = 0;
+        selection_menu.addentry(i++, true, MENU_AUTOASSIGN, _("Leave it alone"));
+        for (auto iter : prying_items) {
+            selection_menu.addentry(i++, true, MENU_AUTOASSIGN, string_format(_("Use the %s"),
+                iter->tname()));
+        }
+
+        selection_menu.query();
+        auto index = selection_menu.ret;
+
+        if (index == 0 || index == UILIST_CANCEL) {
+            none(p, examp);
+            return;
+        }
+
+        item temporary_item(prying_items[index - 1]->type);
+        dummy.crowbar(&p, &temporary_item, false, examp);
     }
-
-    selection_menu.query();
-    auto index = selection_menu.ret;
-
-    if( index == 0 || index == UILIST_CANCEL ) {
-        none( p, examp );
-        return;
-    }
-
-    item temporary_item( prying_items[index - 1]->type );
-    dummy.crowbar( &p, &temporary_item, false, examp );
 }
 
 void iexamine::bulletin_board(player &, const tripoint &examp)
