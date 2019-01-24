@@ -550,7 +550,8 @@ void player::complete_craft()
 
     if( making.skill_used ) {
         // normalize experience gain to crafting time, giving a bonus for longer crafting
-        const double batch_mult = batch_size + base_time_to_craft( making, batch_size ) / 30000.0;
+        //CRAFT_SCALING is pretty much a difficulty/cheat option, shouldn't affect things peripheral to crafting speed (e.g. experience per crafting op), so divide it out of this
+        const double batch_mult = batch_size + base_time_to_craft( making, batch_size ) / 30000.0 * 100 / get_option<int>("CRAFT_SCALING");
         const int base_practice = ( making.difficulty * 15 + 10 ) * batch_mult;
         const int skill_cap = static_cast<int>( making.difficulty * 1.25 );
         practice( making.skill_used, base_practice, skill_cap );
@@ -1222,9 +1223,9 @@ bool player::disassemble( item &obj, int pos, bool ground, bool interactive )
     }
 
     if( activity.id() != activity_id( "ACT_DISASSEMBLE" ) ) {
-        assign_activity( activity_id( "ACT_DISASSEMBLE" ), r.time );
+        assign_activity( activity_id( "ACT_DISASSEMBLE" ), r.time * get_option<int>("CRAFT_SCALING") / 100);
     } else if( activity.moves_left <= 0 ) {
-        activity.moves_left = r.time;
+        activity.moves_left = r.time * get_option<int>("CRAFT_SCALING") / 100;
     }
 
     activity.values.push_back( pos );
@@ -1337,7 +1338,7 @@ void player::complete_disassemble()
         return;
     }
 
-    activity.moves_left = next_recipe.time;
+    activity.moves_left = next_recipe.time * get_option<int>("CRAFT_SCALING")/100;
 }
 
 // TODO: Make them accessible in a less ugly way
