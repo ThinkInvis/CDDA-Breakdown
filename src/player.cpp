@@ -838,6 +838,12 @@ void player::process_turn()
             add_msg_if_player( m_info, _( "You learned a new style." ) );
         }
     }
+    if( inp_mngr.get_previously_pressed_key() == KEY_LEFT ) {
+        facing = FD_LEFT;
+    }
+    else if( inp_mngr.get_previously_pressed_key() == KEY_RIGHT ) {
+        facing = FD_RIGHT;
+    }
 }
 
 void player::action_taken()
@@ -847,7 +853,7 @@ void player::action_taken()
 
 void player::update_morale()
 {
-    morale->decay( 1_turns );
+    morale->decay( 10_turns );
     apply_persistent_morale();
 }
 
@@ -4329,7 +4335,7 @@ needs_rates player::calc_needs_rates()
             // Hunger and thirst advance *much* more slowly whilst we hibernate.
             rates.hunger *= ( 2.0f / 7.0f );
             rates.thirst *= ( 2.0f / 7.0f );
-        } 
+        }
         rates.recovery -= float( get_perceived_pain() ) / 60;
 
     } else {
@@ -8651,7 +8657,7 @@ bool player::add_or_drop_with_msg( item &it, const bool unloading )
     return true;
 }
 
-bool player::unload(item &it) 
+bool player::unload(item &it)
 {
     // Unload a container consuming moves per item successfully removed
     if( it.is_container() || it.is_bandolier() ) {
@@ -11612,7 +11618,6 @@ action_id player::get_next_auto_move_direction()
         // Should never happen, but check just in case
         return ACTION_NULL;
     }
-
     return get_movement_direction_from_delta( dp.x, dp.y, dp.z );
 }
 
@@ -12318,7 +12323,6 @@ float player::speed_rating() const
     if( move_mode != "run" ) {
         ret *= 1.0f + (static_cast<float>( stamina ) / static_cast<float>( get_stamina_max() ));
     }
-
     return ret;
 }
 

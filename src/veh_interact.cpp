@@ -23,6 +23,7 @@
 #include "messages.h"
 #include "npc.h"
 #include "output.h"
+#include "options.h"
 #include "overmapbuffer.h"
 #include "player.h"
 #include "skill.h"
@@ -104,6 +105,9 @@ player_activity veh_interact::serialize_activity()
     if( g->u.has_trait( trait_id( "DEBUG_HS" ) ) ) {
         time = 1;
     }
+    
+    time *= get_option<int>("VEHSTRUC_SCALING")/100;
+
     player_activity res( activity_id( "ACT_VEHICLE" ), time, static_cast<int>( sel_cmd ) );
 
     // if we're working on an existing part, use that part as the reference point
@@ -264,7 +268,7 @@ bool veh_interact::format_reqs( std::ostringstream& msg, const requirement_data 
 
     msg << _( "<color_white>Time required:</color>\n" );
     //@todo: better have a from_moves function
-    msg << "> " << to_string_approx( time_duration::from_turns( moves / 100 ) ) << "\n";
+    msg << "> " << to_string_approx( time_duration::from_turns( (moves / 100) * (get_option<int>("VEHSTRUC_SCALING") / 100)) ) << "\n";
 
     msg << _( "<color_white>Skills required:</color>\n" );
     for( const auto& e : skills ) {
