@@ -550,7 +550,8 @@ void player::complete_craft()
 
     if( making.skill_used ) {
         // normalize experience gain to crafting time, giving a bonus for longer crafting
-        const double batch_mult = batch_size + base_time_to_craft( making, batch_size ) / 30000.0;
+        //CRAFT_SCALING is pretty much a difficulty/cheat option, shouldn't affect things peripheral to crafting speed (e.g. experience per crafting op), so divide it out of this
+        const double batch_mult = batch_size + base_time_to_craft( making, batch_size ) / 30000.0 * 100 / get_option<int>("CRAFT_SCALING");
         const int base_practice = ( making.difficulty * 15 + 10 ) * batch_mult;
         const int skill_cap = static_cast<int>( making.difficulty * 1.25 );
         practice( making.skill_used, base_practice, skill_cap );
@@ -706,8 +707,28 @@ void player::complete_craft()
             making.is_reversible() ) {
             // Setting this for items counted by charges gives only problems:
             // those items are automatically merged everywhere (map/vehicle/inventory),
-            // which would either loose this information or merge it somehow.
+            // which would either lose this information or merge it somehow.
             set_components( newit.components, used, batch_size, newit_counter );
+            newit_counter++;
+        } else if( newit.is_food() && !newit.has_flag( "NUTRIENT_OVERRIDE" ) ) {
+            // if a component item has "cooks_like" it will be replaced by that item as a component
+            for( item &comp : used ) {
+                // only comestibles have cooks_like.  any other type of item will throw an exception, so filter those out
+                if( comp.is_comestible() && !comp.type->comestible->cooks_like.empty() ) {
+                    comp = item( comp.type->comestible->cooks_like, comp.birthday(), comp.charges );
+                }
+            }
+            // byproducts get stored as a "component" but with a byproduct flag for consumption purposes
+            if( making.has_byproducts() ) {
+                for( item &byproduct : making.create_byproducts( batch_size ) ) {
+                    byproduct.set_flag( "BYPRODUCT" );
+                    used.push_back( byproduct );
+                }
+            }
+            // store components for food recipes that do not have the override flag
+            set_components( newit.components, used, batch_size, newit_counter );
+            // store the number of charges the recipe creates
+            newit.recipe_charges = newit.charges / batch_size;
             newit_counter++;
         }
 
@@ -801,7 +822,8 @@ comp_selection<item_comp> player::select_item_component( const std::vector<item_
             }
         } else { // Counting by units, not charges
 
-            if( has_amount( type, count ) ) {
+            // Can't use pseudo items as components
+            if( has_amount( type, count, false ) ) {
                 player_has.push_back( component );
                 found = true;
             }
@@ -809,7 +831,7 @@ comp_selection<item_comp> player::select_item_component( const std::vector<item_
                 map_has.push_back( component );
                 found = true;
             }
-            if( !found && amount_of( type ) + map_inv.amount_of( type ) >= count ) {
+            if( !found && amount_of( type, false ) + map_inv.amount_of( type, false ) >= count ) {
                 mixed.push_back( component );
             }
         }
@@ -1222,9 +1244,9 @@ bool player::disassemble( item &obj, int pos, bool ground, bool interactive )
     }
 
     if( activity.id() != activity_id( "ACT_DISASSEMBLE" ) ) {
-        assign_activity( activity_id( "ACT_DISASSEMBLE" ), r.time );
+        assign_activity( activity_id( "ACT_DISASSEMBLE" ), r.time * get_option<int>("CRAFT_SCALING") / 100);
     } else if( activity.moves_left <= 0 ) {
-        activity.moves_left = r.time;
+        activity.moves_left = r.time * get_option<int>("CRAFT_SCALING") / 100;
     }
 
     activity.values.push_back( pos );
@@ -1337,7 +1359,7 @@ void player::complete_disassemble()
         return;
     }
 
-    activity.moves_left = next_recipe.time;
+    activity.moves_left = next_recipe.time * get_option<int>("CRAFT_SCALING")/100;
 }
 
 // TODO: Make them accessible in a less ugly way

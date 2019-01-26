@@ -9,6 +9,7 @@
 #include "generic_factory.h"
 #include "item.h"
 #include "itype.h"
+#include "options.h"
 #include "output.h"
 #include "skill.h"
 #include "uistate.h"
@@ -32,7 +33,7 @@ int recipe::batch_time( int batch, float multiplier, size_t assistants ) const
 
     // if recipe does not benefit from batching and we have no assistants, don't do unnecessary additional calculations
     if( batch_rscale == 0.0 && assistants == 0 ) {
-        return local_time * batch;
+        return local_time * batch * get_option<int>("CRAFT_SCALING")/100;
     }
 
     float total_time = 0.0;
@@ -60,7 +61,7 @@ int recipe::batch_time( int batch, float multiplier, size_t assistants ) const
         total_time = local_time;
     }
 
-    return int( total_time );
+    return int( total_time  * get_option<int>("CRAFT_SCALING") / 100 );
 }
 
 bool recipe::has_flag( const std::string &flag_name ) const
@@ -200,6 +201,9 @@ void recipe::load( JsonObject &jo, const std::string &src )
         assign( jo, "reversible", reversible, strict );
 
         if( jo.has_member( "byproducts" ) ) {
+            if( this->reversible ) {
+                jo.throw_error( "Recipe cannot be reversible and have byproducts" );
+            }
             auto bp = jo.get_array( "byproducts" );
             byproducts.clear();
             while( bp.has_more() ) {
