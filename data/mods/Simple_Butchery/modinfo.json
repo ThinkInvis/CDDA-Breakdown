@@ -1,0 +1,17 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "simple_butchery",
+    "name": "Simple Butchery",
+    "description": "Removes all the extra tool and nearby object requirements for full butchery on large corpses.",
+    "category": "rebalance",
+    "dependencies": [ "dda" ]
+  },
+  {
+    "type": "EXTERNAL_OPTION",
+    "name": "SIMPLE_BUTCHER",
+    "info": "If true, full butchery on a large corpse will no longer require ANY of: rope, a tree/rack, a table, a cutting tool, a saw.",
+    "stype": "bool",
+    "value": true
+  }
+]
