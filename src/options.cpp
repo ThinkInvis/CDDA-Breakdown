@@ -1776,7 +1776,7 @@ void options_manager::add_options_world_default()
     );
 
     add("CRAFT_SCALING", "world_default", translate_marker("Craft scaling"),
-        translate_marker("Sets the time of crafting (and disassembly) in percents.  '50' is two times faster than default, '200' is two times longer."),
+        translate_marker("Sets the time of crafting (and disassembly/butchery) in percents.  '50' is two times faster than default, '200' is two times longer."),
         1, 1000, 100
     );
 

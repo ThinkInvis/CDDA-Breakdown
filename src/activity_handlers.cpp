@@ -503,6 +503,8 @@ int butcher_time_to_cut( const player &u, const item &corpse_item, const butcher
         time_to_cut /= 4;
     }
 
+    time_to_cut *= get_option<int>("CRAFT_SCALING") / 100;
+
     return time_to_cut;
 }
 // The below function exists to allow mods to migrate their content fully to the new harvest system. This function should be removed eventually.
