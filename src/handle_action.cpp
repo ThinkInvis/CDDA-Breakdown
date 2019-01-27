@@ -4,6 +4,7 @@
 
 #include "action.h"
 #include "advanced_inv.h"
+#include "animation_ui.h"
 #include "auto_pickup.h"
 #include "bionics.h"
 #include "calendar.h"
@@ -267,6 +268,7 @@ input_context game::get_player_input( std::string &action )
                 initial_draw = false;
             }
             draw_weather( wPrint );
+            aui_update();
 
             if( uquit != QUIT_WATCH ) {
                 draw_sct();
