@@ -8112,7 +8112,7 @@ void player::mend_item( item_location&& obj, bool interactive )
             std::ostringstream descr;
             descr << _( "<color_white>Time required:</color>\n" );
             //@todo: better have a from_moves function
-            descr << "> " << to_string_approx( time_duration::from_turns( f.first->time() / 100 ) ) << "\n";
+            descr << "> " << to_string_approx( time_duration::from_turns( f.first->time() / 100 * get_option<int>("VEHSTRUC_SCALING") / 100 ) ) << "\n";
             descr << _( "<color_white>Skills:</color>\n" );
             for( const auto& e : f.first->skills() ) {
                 bool hasSkill = get_skill_level( e.first ) >= e.second;
@@ -8145,7 +8145,7 @@ void player::mend_item( item_location&& obj, bool interactive )
             return;
         }
 
-        assign_activity( activity_id( "ACT_MEND_ITEM" ), faults[ sel ].first->time() );
+        assign_activity( activity_id( "ACT_MEND_ITEM" ), faults[ sel ].first->time() * get_option<int>("VEHSTRUC_SCALING") / 100 );
         activity.name = faults[ sel ].first->id().str();
         activity.targets.push_back( std::move( obj ) );
     }
