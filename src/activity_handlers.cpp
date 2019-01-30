@@ -26,6 +26,7 @@
 #include "mongroup.h"
 #include "morale_types.h"
 #include "mtype.h"
+#include "options.h"
 #include "output.h"
 #include "player.h"
 #include "requirements.h"
@@ -331,7 +332,7 @@ void set_up_butchery( player_activity &act, player &u, butcher_type action )
         }
     }
     // workshop butchery (full) prequisites
-    if( action == BUTCHER_FULL ) {
+    if( action == BUTCHER_FULL && !get_option<bool>("SIMPLE_BUTCHER") ) {
         bool has_rope = u.has_amount( "rope_30", 1 ) || u.has_amount( "rope_makeshift_30", 1 ) ||
                         u.has_amount( "vine_30", 1 ) ;
         bool b_rack_present = g->m.has_flag_furn( "BUTCHER_EQ", u.pos() );
@@ -501,6 +502,8 @@ int butcher_time_to_cut( const player &u, const item &corpse_item, const butcher
     if( corpse_item.has_flag( "QUARTERED" ) ) {
         time_to_cut /= 4;
     }
+
+    time_to_cut *= get_option<int>("CRAFT_SCALING") / 100;
 
     return time_to_cut;
 }
@@ -2876,7 +2879,7 @@ void activity_handlers::fill_pit_finish( player_activity *act, player *p )
 
 void activity_handlers::play_with_pet_finish( player_activity *act, player *p )
 {
-    p->add_morale( MORALE_PLAY_WITH_PET, rng( 3, 10 ), 10, 30_minutes, 5_minutes / 2 );
+    p->add_morale( MORALE_PLAY_WITH_PET, rng( 3, 10 ), 10, 5_hours, 25_minutes );
     p->add_msg_if_player( m_good, _( "Playing with your %s has lifted your spirits a bit." ),
                           act->str_values[0].c_str() );
     act->set_to_null();
