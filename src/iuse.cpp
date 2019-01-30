@@ -5691,7 +5691,8 @@ int iuse::btelstore(player *p, item *it, bool t, const tripoint &pos)
     else if (!p->is_npc()) {
 
         enum {
-            ei_invalid, ei_reg, ei_dereg, ei_dowarp
+            ei_invalid, ei_reg, ei_dereg, ei_dowarp,
+            ei_link, ei_linkst
         };
 
         uilist amenu;
@@ -5714,11 +5715,21 @@ int iuse::btelstore(player *p, item *it, bool t, const tripoint &pos)
             }
             amenu.addentry(ei_dereg, true, 'r', _("Wipe stored position"));
         }
+        amenu.addentry(ei_link, true, 'r', _("[DEBUG] Link/unlink an item"));
+        amenu.addentry(ei_linkst, true, 'r', _("[DEBUG] List linked items"));
 
         amenu.query();
 
         const int choice = amenu.ret;
 
+        if( ei_link == choice ) {
+        }
+        if( ei_linkst == choice ) {
+            p->add_msg_if_player(m_info, _("This %s is linked to..."), it->display_name);
+            for(auto linkeditem = it->linked_items.begin(); linkeditem != it->linked_items.end(); ++linkeditem) {
+                p->add_msg_if_player(m_info, _("With a great *schwoop*, your surroundings shift wildly!"));
+            }
+        }
         if (ei_reg == choice) {
             it->active = true;
             it->set_var("BEACON_STORED", true);

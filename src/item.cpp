@@ -7471,6 +7471,22 @@ int item::get_min_str() const
     }
 }
 
+bool item::is_linked_to( item &it ) const
+{
+    return std::find( linked_items.begin(), linked_items.end(), &it ) != linked_items.end();
+}
+
+void item::toggle_link_to( item &it ) 
+{
+    if( is_linked_to(it) ) {
+        linked_items.remove( it );
+        it.linked_items.remove( *this );
+    } else {
+        linked_items.emplace_back( it );
+        it.linked_items.emplace_back( *this );
+    }
+}
+
 std::vector<item_comp> item::get_uncraft_components() const
 {
     std::vector<item_comp> ret;

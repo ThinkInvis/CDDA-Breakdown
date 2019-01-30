@@ -1769,6 +1769,9 @@ class item : public visitable<item>
 
         int get_min_str() const;
 
+        bool is_linked_to( item &it ) const;
+        void toggle_link_to( item &it );
+
     private:
         /**
          * Calculate temperature differential and handle FROZEN/COLD/HOT states
@@ -1807,6 +1810,7 @@ class item : public visitable<item>
 
         const itype *type;
         std::list<item> contents;
+        std::list<item> linked_items;
         t_item_vector components;
         /** What faults (if any) currently apply to this item */
         std::set<fault_id> faults;
