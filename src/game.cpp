@@ -2360,6 +2360,7 @@ input_context get_default_mode_input_context()
     ctxt.register_action( "quit" );
     ctxt.register_action( "player_data" );
     ctxt.register_action( "map" );
+    ctxt.register_action( "fast_travel" );
     ctxt.register_action( "missions" );
     ctxt.register_action( "factions" );
     ctxt.register_action( "kills" );
@@ -10103,6 +10104,135 @@ bool game::prompt_dangerous_tile( const tripoint &dest_loc ) const
         return false;
     }
     return true;
+}
+
+void game::fast_travel()
+{
+    enum {
+        ei_invalid, ei_reg, ei_dereg, ei_dowarp
+    };
+
+    uilist amenu;
+
+    amenu.text = _("[Fast Travel]");
+
+    umap_triad curr_loc;
+    curr_loc.ovm = tripoint(g->u.global_omt_location());
+    curr_loc.sm = tripoint(g->u.global_sm_location());
+    curr_loc.u = tripoint(g->u.pos());
+
+    amenu.addentry(ei_reg, true, 'r', _("Set a waypoint"));
+    if( ft_locs.size() > 0 ) {
+        amenu.addentry(ei_dowarp, true, 'r', _("Travel to a waypoint"));
+        amenu.addentry(ei_dereg, true, 'r', _("Forget a waypoint"));
+    }
+    amenu.addentry(ei_invalid, true, 'r', _("Never mind"));
+    amenu.query();
+
+    const int choice = amenu.ret;
+
+    if (ei_reg == choice) {
+        std::string messageprefix = string_format(
+            _( "You are at u(%1$s, %2$s, %3$s), s(%4$s, %5$s, %6$s), o(%7$s, %8$s, %9$s). New fast travel waypoint name:" ),
+                curr_loc.u.x, curr_loc.u.y, curr_loc.u.z, 
+                curr_loc.sm.x, curr_loc.sm.y, curr_loc.sm.z, 
+                curr_loc.ovm.x, curr_loc.ovm.y, curr_loc.ovm.z);
+
+        string_input_popup popup;
+        popup.title( string_format( _( "New Waypoint" ) ) )
+            .width( 64 )
+            .text( "" )
+            .description( messageprefix )
+            .identifier( "new_waypoint" )
+            .max_length( 128 )
+            .query();
+        if( popup.canceled() ) {
+            return;
+        }
+        const std::string message = popup.text();
+        if( message == "" || message == "[Cancel]" || message == "[AUTO] Previous Location" ) {
+            add_msg(_("You can't name a waypoint that!"));
+            return;
+        } else if(ft_locs.find(message) != ft_locs.end()) {
+            if(query_yn( _( "A waypoint with that name already exists. Overwrite it?" ) ) ) {
+                ft_locs[message] = curr_loc;
+                add_msg(_("Waypoint '%s' overwritten!"), message);
+            } else {
+                add_msg(_("Never mind."));
+                return;
+            }
+        } else {
+            ft_locs.emplace(message, curr_loc);
+            add_msg(_("Waypoint '%s' created!"), message);
+        }
+    }
+
+    if (ei_dereg == choice) {
+        uilist selection_menu;
+        selection_menu.text = string_format(_("Which waypoint to remove?"));
+
+        int i = 0;
+        selection_menu.addentry( i++, true, MENU_AUTOASSIGN, _( "[Cancel]" ) );
+        for( auto iter : ft_locs ) {
+            selection_menu.addentry( i++, true, MENU_AUTOASSIGN, _( iter.first ) );
+        }
+
+        selection_menu.query();
+        auto index = selection_menu.ret;
+
+        if( index == 0 || index == UILIST_CANCEL ) {
+            add_msg(_("Never mind."));
+            return;
+        }
+
+        auto iname = selection_menu.entries.at(index).txt;
+
+        ft_locs.erase(iname);
+
+        add_msg(_("Waypoint '%s' removed!"), iname);
+        return;
+    }
+
+    if (ei_dowarp == choice) {
+        uilist selection_menu;
+        selection_menu.text = string_format(_("Which waypoint to travel to?"));
+
+        int i = 0;
+        selection_menu.addentry( i++, true, MENU_AUTOASSIGN, _( "[Cancel]" ) );
+        for( auto iter : ft_locs ) {
+            selection_menu.addentry( i++, true, MENU_AUTOASSIGN, _( iter.first ) );
+        }
+
+        selection_menu.query();
+        auto index = selection_menu.ret;
+
+        if( index == 0 || index == UILIST_CANCEL ) {
+            add_msg(_("Never mind."));
+            return;
+        }
+
+        auto iname = selection_menu.entries.at(index).txt;
+        umap_triad new_loc = ft_locs[iname];
+
+        if(ft_locs.find("[AUTO] Previous Location") != ft_locs.end()) {
+            ft_locs["[AUTO] Previous Location"] = curr_loc;
+        } else {
+            ft_locs.emplace("[AUTO] Previous Location", curr_loc);
+        }
+
+        tripoint where_upos_ovm(new_loc.u.x + ((new_loc.sm.x%2==1) ? SEEX : 0), new_loc.u.y + ((new_loc.sm.y%2==1) ? SEEY : 0), new_loc.u.z);
+
+        place_player_overmap(new_loc.ovm);
+        place_player(where_upos_ovm);
+
+        // TODO: this is just a cheat right now, but could become balanced with:
+        //    a. Safety check before creating, or before traveling to, waypoint, at *every tile* on the route between -- make sure there's a safe path
+        //    b. Time requirement for fast traveling, should be displayed in menus... maybe just make it interruptible if route isn't safe (e.g. monster is spotted)?
+        //       This would make fast travel a layer over auto-move that handles distant destinations
+        add_msg(m_info, _("With a great *schwoop*, your surroundings shift wildly!"));
+        u.moves -= 100;
+        return;
+    }
 }
 
 bool game::plmove( int dx, int dy, int dz )

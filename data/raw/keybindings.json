@@ -1712,6 +1712,13 @@
   },
   {
     "type": "keybinding",
+    "name": "Fast Travel",
+    "category": "DEFAULTMODE",
+    "id": "fast_travel",
+    "bindings": [ { "input_method": "keyboard", "key": "]" } ]
+  },
+  {
+    "type": "keybinding",
     "name": "View Map",
     "category": "DEFAULTMODE",
     "id": "map",

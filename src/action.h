@@ -211,6 +211,8 @@ enum action_id : int {
     ACTION_PL_INFO,
     /** Display over-map */
     ACTION_MAP,
+    /** Display fast-travel prompt */
+    ACTION_FAST_TRAVEL,
     /** Display missions screen */
     ACTION_MISSIONS,
     /** Display kills list screen */

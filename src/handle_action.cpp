@@ -1784,6 +1784,10 @@ bool game::handle_action()
                 ui::omap::display();
                 break;
 
+            case ACTION_FAST_TRAVEL:
+                fast_travel();
+                break;
+
             case ACTION_MISSIONS:
                 list_missions();
                 break;
