@@ -267,6 +267,12 @@ struct tripoint {
     void deserialize( JsonIn &jsin );
 };
 
+struct umap_triad {
+    tripoint u;
+    tripoint sm;
+    tripoint ovm;
+};
+
 inline std::ostream &operator<<( std::ostream &os, const tripoint &pos )
 {
     return os << pos.x << "," << pos.y << "," << pos.z;

@@ -491,6 +491,21 @@ void player::load( JsonObject &data )
         setID( tmpid );
     }
 
+    JsonArray ft_loadlocs = data.get_array( "ft_locs" );
+    ft_locs.clear();
+    while( ft_loadlocs.has_more() ) {
+        JsonObject ft_loadloc = ft_loadlocs.next_object();
+        const tripoint ft_loadu( ft_loadloc.get_int("ux"), ft_loadloc.get_int("uy"), ft_loadloc.get_int("uz") );
+        const tripoint ft_loadsm( ft_loadloc.get_int("smx"), ft_loadloc.get_int("smy"), ft_loadloc.get_int("smz") );
+        const tripoint ft_loadovm( ft_loadloc.get_int("ovmx"), ft_loadloc.get_int("ovmy"), ft_loadloc.get_int("ovmz") );
+        umap_triad ft_loadtri;
+        ft_loadtri.u = ft_loadu;
+        ft_loadtri.sm = ft_loadsm;
+        ft_loadtri.ovm = ft_loadovm;
+        const std::string ft_loadlabel = ft_loadloc.get_string( "label" );
+        ft_locs.emplace(ft_loadlabel, ft_loadtri);
+    }
+
     data.read( "power_level", power_level );
     data.read( "max_power_level", max_power_level );
     // Bionic power scale has been changed, savegame version 21 has the new scale
@@ -623,6 +638,24 @@ void player::store( JsonOut &json ) const
     json.member( "hp_max", hp_max );
     json.member( "damage_bandaged", damage_bandaged );
     json.member( "damage_disinfected", damage_disinfected );
+
+    json.member( "ft_locs" );
+    json.start_array();
+    for( const auto &elem : ft_locs ) {
+        json.start_object();
+        json.member( "ux", elem.second.u.x );
+        json.member( "uy", elem.second.u.y );
+        json.member( "uz", elem.second.u.z );
+        json.member( "smx", elem.second.sm.x );
+        json.member( "smy", elem.second.sm.y );
+        json.member( "smz", elem.second.sm.z );
+        json.member( "ovmx", elem.second.ovm.x );
+        json.member( "ovmy", elem.second.ovm.y );
+        json.member( "ovmz", elem.second.ovm.z );
+        json.member( "label", elem.first );
+        json.end_object();
+    }
+    json.end_array();
 
     // npc; unimplemented
     json.member( "power_level", power_level );

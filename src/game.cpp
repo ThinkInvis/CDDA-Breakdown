@@ -10121,12 +10121,12 @@ void game::fast_travel()
     curr_loc.sm = tripoint(g->u.global_sm_location());
     curr_loc.u = tripoint(g->u.pos());
 
-    amenu.addentry(ei_reg, true, 'r', _("Set a waypoint"));
-    if( ft_locs.size() > 0 ) {
-        amenu.addentry(ei_dowarp, true, 'r', _("Travel to a waypoint"));
-        amenu.addentry(ei_dereg, true, 'r', _("Forget a waypoint"));
+    amenu.addentry(ei_reg, true, 'b', _("Set a waypoint"));
+    if( u.ft_locs.size() > 0 ) {
+        amenu.addentry(ei_dowarp, true, 'w', _("Travel to a waypoint"));
+        amenu.addentry(ei_dereg, true, 'x', _("Forget a waypoint"));
     }
-    amenu.addentry(ei_invalid, true, 'r', _("Never mind"));
+    amenu.addentry(ei_invalid, true, 'n', _("Never mind"));
     amenu.query();
 
     const int choice = amenu.ret;
@@ -10153,16 +10153,16 @@ void game::fast_travel()
         if( message == "" || message == "[Cancel]" || message == "[AUTO] Previous Location" ) {
             add_msg(_("You can't name a waypoint that!"));
             return;
-        } else if(ft_locs.find(message) != ft_locs.end()) {
+        } else if(u.ft_locs.find(message) != u.ft_locs.end()) {
             if(query_yn( _( "A waypoint with that name already exists. Overwrite it?" ) ) ) {
-                ft_locs[message] = curr_loc;
+                u.ft_locs[message] = curr_loc;
                 add_msg(_("Waypoint '%s' overwritten!"), message);
             } else {
                 add_msg(_("Never mind."));
                 return;
             }
         } else {
-            ft_locs.emplace(message, curr_loc);
+            u.ft_locs.emplace(message, curr_loc);
             add_msg(_("Waypoint '%s' created!"), message);
         }
     }
@@ -10173,7 +10173,7 @@ void game::fast_travel()
 
         int i = 0;
         selection_menu.addentry( i++, true, MENU_AUTOASSIGN, _( "[Cancel]" ) );
-        for( auto iter : ft_locs ) {
+        for( auto iter : u.ft_locs ) {
             selection_menu.addentry( i++, true, MENU_AUTOASSIGN, _( iter.first ) );
         }
 
@@ -10187,7 +10187,7 @@ void game::fast_travel()
 
         auto iname = selection_menu.entries.at(index).txt;
 
-        ft_locs.erase(iname);
+        u.ft_locs.erase(iname);
 
         add_msg(_("Waypoint '%s' removed!"), iname);
         return;
@@ -10199,7 +10199,7 @@ void game::fast_travel()
 
         int i = 0;
         selection_menu.addentry( i++, true, MENU_AUTOASSIGN, _( "[Cancel]" ) );
-        for( auto iter : ft_locs ) {
+        for( auto iter : u.ft_locs ) {
             selection_menu.addentry( i++, true, MENU_AUTOASSIGN, _( iter.first ) );
         }
 
@@ -10212,12 +10212,12 @@ void game::fast_travel()
         }
 
         auto iname = selection_menu.entries.at(index).txt;
-        umap_triad new_loc = ft_locs[iname];
+        umap_triad new_loc = u.ft_locs[iname];
 
-        if(ft_locs.find("[AUTO] Previous Location") != ft_locs.end()) {
-            ft_locs["[AUTO] Previous Location"] = curr_loc;
+        if(u.ft_locs.find("[AUTO] Previous Location") != u.ft_locs.end()) {
+            u.ft_locs["[AUTO] Previous Location"] = curr_loc;
         } else {
-            ft_locs.emplace("[AUTO] Previous Location", curr_loc);
+            u.ft_locs.emplace("[AUTO] Previous Location", curr_loc);
         }
 
         tripoint where_upos_ovm(new_loc.u.x + ((new_loc.sm.x%2==1) ? SEEX : 0), new_loc.u.y + ((new_loc.sm.y%2==1) ? SEEY : 0), new_loc.u.z);

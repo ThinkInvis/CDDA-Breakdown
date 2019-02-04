@@ -1462,6 +1462,8 @@ class player : public Character
         std::list<player_activity> backlog;
         int volume;
 
+        std::map<std::string, umap_triad> ft_locs;
+
         const profession *prof;
 
         start_location_id start_location;
